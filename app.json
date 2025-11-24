@@ -1,0 +1,59 @@
+{
+  "expo": {
+    "name": "BelajarIndo",
+    "slug": "BelajarIndo",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon/adaptive-icon.png",
+    "scheme": "belajarindo",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "icon": {
+        "dark": "./assets/images/icon/ios-dark.png",
+        "light": "./assets/images/icon/ios-light.png",
+        "tinted": "./assets/images/icon/ios-tinted.png"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff",
+        "foregroundImage": "./assets/images/icon/adaptive-icon.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.aldoyf.BelajarIndo"
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/icon/adaptive-icon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images//icon/splash-icon-light.png",
+          "imageWidth": 200,
+          "contentFit": "contain",
+          "backgroundColor": "#ffffff",
+          "dark": {
+            "image": "./assets/images//icon/splash-icon-dark.png",
+            "backgroundColor": "#000000"
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b1cb850a-77de-48aa-a1a7-bc293d480957"
+      }
+    }
+  }
+}
