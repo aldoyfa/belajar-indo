@@ -1,0 +1,1490 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon with cache busting -->
+    <link rel="shortcut icon" href="./assets/icon/bi.png?v=2" type="image/x-icon">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/icon/bi.png?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icon/bi.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icon/bi.png?v=2">
+    <meta name="msapplication-TileImage" content="./assets/icon/bi.png?v=2">
+    <meta name="theme-color" content="#ffffff">
+
+  <!--CSS-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/dist/css/style.css">
+
+  <!-- LINE 13: Ganti judul website -->
+  <title>Indonesian Virtual Lab - Belajar Indo</title>
+    <script>
+      // Use a global window.API_URL so all pages/scripts share the same backend URL.
+      // This will not override an existing value (useful for testing or env overrides).
+      window.API_URL = window.API_URL || "https://belajar-indo.vercel.app";
+      // Backwards-compatible local const for code that still references API_URL
+      const API_URL = window.API_URL;
+      // Redirect to login page if user not authenticated.
+      // This runs early to avoid rendering the full index for anonymous users.
+      (function(){
+        try {
+          const u = localStorage.getItem('user');
+          const t = localStorage.getItem('token');
+          if (!u && !t) {
+            // preserve current path so login can redirect back if needed
+            const returnTo = encodeURIComponent(location.pathname + location.search + location.hash);
+            location.replace('login.html?returnTo=' + returnTo);
+          }
+        } catch(e) {
+          // if any error, don't block the page
+          console.warn('Auth redirect check failed', e);
+        }
+      })();
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!--Animate Style-->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+
+  </head>
+<body id="home">
+    <!--navbar-->
+    <nav class="navbar navbar-expand-lg py-3 animate__animated animate__fadeInDown" style="background: linear-gradient(to right, #667eea, #764ba2); ">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <img src="assets/icon/bi.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top rounded" />
+      <span class ="fw-bold text-white">Belajar Indo</span>
+    </a>
+    <button class="navbar-toggler bg-white shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto d-flex gap-3 text-center pt-lg-0 pt-4">
+      <li class="nav-item">
+        <a class="nav-link text-white" href="#home">Home</a>
+      </li>
+      <li class="nav-item">
+        <a id="navProfileLink" class="nav-link text-white" href="profile.html">Profile</a>
+      </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link text-white dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Features
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#vocabulary">Vocabulary</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#quiz">Quiz</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#about">About Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn" href="login.html" style="background: linear-gradient(90deg, #ff8c8c, #ffb6b9); color: white; font-weight: bold;">
+            Login
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!--navbar-->
+
+<script>
+  // Show/hide profile link based on login token
+  (function(){
+    function updateNav() {
+      try {
+        const token = localStorage.getItem('token');
+        const profileLink = document.getElementById('navProfileLink');
+        const loginBtn = document.querySelector('.navbar .btn[href="login.html"]');
+        if (profileLink) profileLink.style.display = token ? '' : 'none';
+        if (loginBtn) loginBtn.style.display = token ? 'none' : '';
+      } catch(e){/* ignore */}
+    }
+    updateNav();
+    window.addEventListener('storage', updateNav);
+    document.addEventListener('DOMContentLoaded', updateNav);
+  })();
+</script>
+
+<!--Hero-->
+<section class="hero py-5">
+    <div class="container">
+        <div class="row align-items-center">
+                <!-- Kolom Kiri (Text) -->
+                <div class="col-md-6 mb-5">
+                        <div class="box animate__animated animate__fadeInLeft"></div>
+      <!-- LINE 66-69: Ganti hero text -->
+      <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInLeft">
+        Welcome to Indonesian Virtual Lab
+      </h1>
+      <p class="lh-lg mb-4 animate__animated animate__fadeInLeft" id="motivation-text">
+        Your comprehensive virtual laboratory for mastering Indonesian language through interactive experiments and simulations.
+      </p>
+                        <div class="d-flex gap-3 animate__animated animate__fadeInLeft">
+                                <a href="#about" class="btn btn-lg" style="background: linear-gradient(90deg, #ff8c8c, #ffb6b9); color: white; font-weight: bold;">About Us</a>
+                                <button type="button" class="btn btn-outline-danger btn-lg" onclick="showRandomMotivation()">New Motivation</button>
+                        </div>
+                </div>
+                <script>
+                const motivations = [
+                    "Learning a language is like opening a door to a new world.",
+                    "Every word you learn brings you closer to understanding a culture.",
+                    "Practice makes perfect - start your Indonesian journey today.",
+                    "The best time to learn Indonesian was yesterday. The second best time is now.",
+                    "Language learning is not a race, it's a journey of discovery."
+                ];
+
+                function showRandomMotivation() {
+                    const randomIndex = Math.floor(Math.random() * motivations.length);
+                    document.getElementById('motivation-text').innerHTML = `"${motivations[randomIndex]}"`;
+                }
+                </script>
+
+      <!-- Kolom Kanan (Gambar) -->
+      <div class="col-md-6 text-center">
+        <img src="./assets/images/heroo.png" alt="Hero Image" class="img-fluid animate__animated animate__fadeInRight" />
+      </div>
+
+    </div>
+  </div>
+</section>
+
+        <!--Hero-->
+
+        <!--About-->
+        <section class="about" id="about">
+            <div class="container">
+                <div class="about-box text-center">
+                    <h1 class="fw-bold mb-4">About Us</h1>
+                    <p class="lh-lg mb-5">Belajar Indo is here as a comprehensive solution for students, university learners, and the international community who want to master the Indonesian language. With an intuitive interface, interactive features, and well-structured learning materials, we aim to make your Indonesian learning journey enjoyable and accessible anytime, anywhere.</p>
+                    <img src="./assets/images/page2.png" alt="About illustration" class="img-fluid" style="max-width: 400px;">
+                </div>
+            </div>
+        </section>
+        <!--About-->
+
+        <!-- Features -->
+        <section class="project" id="features">
+        <div class="container px-4">
+            <div class="projects-box"></div>
+            <!-- Sekitar line 150: Ganti judul Features jadi Virtual Lab -->
+            <h1 class="fw-bold mb-3 text-center">Virtual Lab Modules</h1>
+            <p class="text-center">Interactive laboratory for Indonesian language experimentation and analysis</p>
+
+            <div class="row justify-content-center pt-4 features-row">
+
+            <!-- Vocabulary Feature -->
+            <div class="col col-md-5 col-12" id="vocabulary">
+            <div class="shadow p-3 rounded h-100 d-flex flex-column">
+            <img src="./assets/images/vocab.png" alt="Project image" width="100%" />
+            <h4 class="pt-4">Vocabulary</h4>
+            <div class="flex-grow-1">
+            <p>
+            Master thousands of Indonesian words with ease! Our interactive Vocabulary
+            section features audio pronunciation, visual flashcards, and engaging exercises to make
+            learning effective and enjoyable.
+            </p>
+            </div>
+            <div class="d-flex gap-2 mt-auto">
+            <button class="btn btn-pink-salmon" style="background-color: #FA8072 !important; border-color: #FA8072 !important; color: white !important;" onclick="showVocabPopup()">Try Now</button>
+            <a href="https://drive.google.com/file/d/1iCZLcN6d56llndWI7qX0cBYd1wrdEfpI/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary">Learn More</a>
+            <button class="btn btn-warning" onclick="goBack()">← Back</button>
+            </div>
+            <!-- Audio menggunakan Text-to-Speech -->
+            <script>
+            function playVocabularyAudio() {
+                // Using Web Speech API for text-to-speech
+                const text = "Rumah"; // Indonesian word to pronounce
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'id-ID'; // Indonesian language
+                    utterance.rate = 0.8; // Speech rate
+                    utterance.pitch = 1; // Voice pitch
+                    speechSynthesis.speak(utterance);
+                } else {
+                    alert('Your browser does not support text-to-speech');
+                }
+            }
+            </script>
+            </div>
+            </div>
+
+            <!-- Quiz Feature -->
+            <div class="col col-md-5 col-12" id="quiz">
+            <div class="shadow p-3 rounded h-100 d-flex flex-column">
+            <img src="./assets/images/quiz.png" alt="Project image" width="100%" />
+            <h4 class="pt-4">Interactive Quiz</h4>
+            <div class="flex-grow-1">
+            <p>Test and improve your Indonesian language skills with our fun, interactive quizzes! Challenge yourself with various difficulty levels and track your progress.</p>
+            </div>
+            <div class="mt-auto d-flex gap-2">
+            <button class="btn btn-pink-salmon" style="background-color: #FA8072 !important; border-color: #FA8072 !important; color: white !important;" id="try-quiz-btn">Try Now</button>
+            <button class="btn btn-secondary" id="view-history-btn">View History</button>
+            <button class="btn btn-warning" onclick="goBack()">← Back</button>
+            </div>
+            </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Vocabulary Popup Modal -->
+        <div class="modal fade" id="vocabModal" tabindex="-1" aria-labelledby="vocabModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="vocabModalLabel">Vocabulary Flash Card</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+            <div id="flashcard" class="mb-3">
+                <h3 id="vocab-word">Rumah</h3>
+                <p id="vocab-meaning">House</p>
+            </div>
+            <button class="btn btn-secondary" onclick="nextOldFlashcard()">Next</button>
+            </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Quiz Popup Modal -->
+        <div class="modal fade" id="quizModal" tabindex="-1" aria-labelledby="quizModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="quizModalLabel">Indonesian Quiz Challenge</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+            <div id="quiz-container">
+                <div id="quiz-question-container" class="mb-4">
+                    <h4 id="quiz-question">What does "Rumah" mean in English?</h4>
+                </div>
+                <div id="quiz-options" class="d-grid gap-2">
+                    <button class="btn btn-outline-primary quiz-option">House</button>
+                    <button class="btn btn-outline-primary quiz-option">School</button>
+                    <button class="btn btn-outline-primary quiz-option">Car</button>
+                    <button class="btn btn-outline-primary quiz-option">Book</button>
+                </div>
+                <div id="quiz-result" class="mt-3" style="display: none;">
+                    <p id="result-text" class="fw-bold"></p>
+                    <p>Score: <span id="quiz-score">0</span>/<span id="total-questions">5</span></p>
+                </div>
+                <div class="mt-3">
+                  <button id="next-quiz-btn" class="btn btn-success" style="display: none;">Next Question</button>
+                  <button id="restart-quiz-btn" class="btn btn-warning" style="display: none;">Restart Quiz</button>
+                <!-- <button id="submit-quiz-btn" class="btn btn-primary" style="display: none;">Submit Quiz</button> -->
+                <!-- Visible submit button for end of quiz; hidden until last question -->
+                <button id="submitQuiz" class="btn btn-primary" style="display:none; margin-top:8px;">Submit Quiz</button>
+                </div>
+            </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </section>
+
+    <!-- Styles for flashcards (local to this page) -->
+    <style>
+      /* Purple stacked flashcard layout: top = Indonesian, bottom = English */
+      .single-flashcard-container{cursor:default}
+      .flashcard-stack{width:100%;border-radius:12px;overflow:hidden;box-shadow:0 12px 30px rgba(118,75,162,0.16)}
+      .flash-top,.flash-bottom{padding:28px;display:flex;align-items:center;justify-content:center;flex-direction:column;min-height:160px}
+      .flash-top{background:linear-gradient(180deg,#6b46c1 0%,#7c3aed 100%);color:#fff}
+      .flash-bottom{background:linear-gradient(180deg,#9f7aea 0%,#c4b5fd 100%);color:#1f2937}
+      .flash-top h2,.flash-bottom h2{font-size:36px;margin:0;font-weight:800}
+      .flash-top p,.flash-bottom p{margin-top:10px;opacity:0.95}
+      .audio-btn-flashcard{
+        position:absolute;
+        left:16px;
+        top:16px;
+        background:rgba(255,255,255,0.95);
+        border:none;
+        border-radius:10px;
+        width:44px;height:44px;
+        display:flex;align-items:center;justify-content:center;
+        font-size:18px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.08);
+        z-index:6;
+      }
+      /* Top variant (keeps absolute inside top panel) */
+      .audio-btn-flashcard.top{position:absolute;left:16px;top:16px}
+      /* Bottom variant should be inline inside the bottom panel and aligned left above the English word */
+      .audio-btn-flashcard.bottom{position:relative;left:auto;right:auto;top:auto;bottom:auto;background:rgba(255,255,255,0.95);margin-left:12px;margin-bottom:8px;align-self:flex-start;width:40px;height:40px}
+      .single-flashcard-wrapper{position:relative}
+      .progress{background:#eee}
+      @media(max-width:768px){.flash-top,.flash-bottom{padding:18px}.flash-top h2,.flash-bottom h2{font-size:28px}}
+    </style>
+
+    <!-- Script untuk Vocabulary dan Flashcard -->
+    <script>
+// Data flashcard vocabulary
+const flashcardData = [
+    { word: "Rumah", meaning: "House" },
+    { word: "Sekolah", meaning: "School" },
+    { word: "Mobil", meaning: "Car" },
+    { word: "Buku", meaning: "Book" },
+    { word: "Air", meaning: "Water" }
+];
+
+let oldFlashcardIndex = 0;
+
+function showVocabPopup() {
+    // Show modal dengan Bootstrap
+    const vocabModal = new bootstrap.Modal(document.getElementById('vocabModal'));
+    vocabModal.show();
+    displayOldFlashcard();
+}
+
+function displayOldFlashcard() {
+    const current = flashcardData[oldFlashcardIndex];
+    document.getElementById('vocab-word').textContent = current.word;
+    document.getElementById('vocab-meaning').textContent = current.meaning;
+}
+
+function playFlashcardAudio() {
+    const currentWord = document.getElementById('vocab-word').textContent;
+    speakIndonesian(currentWord);
+}
+
+function nextOldFlashcard() {
+    oldFlashcardIndex = (oldFlashcardIndex + 1) % flashcardData.length;
+    displayOldFlashcard();
+}
+
+function speakIndonesian(text) {
+    if ('speechSynthesis' in window) {
+        // Hentikan speech yang sedang berjalan
+        speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'id-ID'; // Bahasa Indonesia
+        utterance.rate = 0.7; // Kecepatan bicara
+        utterance.pitch = 1; // Nada suara
+        utterance.volume = 1; // Volume
+        
+        speechSynthesis.speak(utterance);
+    } else {
+        alert('Your browser does not support text-to-speech');
+    }
+}
+
+function speakEnglish(text) {
+    if ('speechSynthesis' in window) {
+        // Hentikan speech yang sedang berjalan
+        speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US'; // Bahasa Inggris
+        utterance.rate = 0.8; // Kecepatan bicara sedikit lebih cepat untuk bahasa Inggris
+        utterance.pitch = 1; // Nada suara
+        utterance.volume = 1; // Volume
+        
+        speechSynthesis.speak(utterance);
+    } else {
+        alert('Your browser does not support text-to-speech');
+    }
+}
+
+function goBack() {
+    // Tutup modal jika sedang terbuka
+    const vocabModal = bootstrap.Modal.getInstance(document.getElementById('vocabModal'));
+    if (vocabModal) {
+        vocabModal.hide();
+    }
+    
+    // Scroll otomatis ke paling atas dengan animasi smooth
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+function playIndonesianAudio(event) {
+  // Stop event propagation agar tidak trigger flip card
+  event.stopPropagation();
+  
+  // Get current word (bahasa Indonesia)
+  const currentWord = kosakataData[currentCategory][currentFlashcardIndex].word;
+  
+  // Play audio dengan text-to-speech bahasa Indonesia
+  speakIndonesian(currentWord);
+}
+
+function playEnglishAudio(event) {
+  // Stop event propagation agar tidak trigger flip card
+  event.stopPropagation();
+  
+  // Get current meaning (bahasa Inggris)
+  const currentMeaning = kosakataData[currentCategory][currentFlashcardIndex].meaning;
+  
+  // Play audio dengan text-to-speech bahasa Inggris
+  speakEnglish(currentMeaning);
+}
+</script>
+
+<!-- Kosakata Modal -->
+<div class="modal fade" id="kosakataModal" tabindex="-1" aria-labelledby="kosakataModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header" style="background: linear-gradient(135deg, #FA8072 0%, #FFB6C1 100%); color: white;">
+        <h5 class="modal-title" id="kosakataModalLabel">Indonesian Vocabulary</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="background: #f8f9fa;">
+        <input type="text" class="form-control mb-3" placeholder="🔍 Search vocabulary..." id="searchKosakata">
+        <div class="row g-4" id="kosakataCategories">
+          <div class="col-md-4 col-sm-6 col-12">
+            <div class="category-card p-3 rounded text-white h-100 d-flex flex-column" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); cursor:pointer; min-height: 120px;" onclick="showKosakataCategory('makanan')">
+              <h5 class="mb-2">🍽️ Food & Drinks</h5>
+              <p class="mb-0 flex-grow-1">50+ vocabulary about Indonesian cuisine</p>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-6 col-12">
+            <div class="category-card p-3 rounded text-white h-100 d-flex flex-column" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); cursor:pointer; min-height: 120px;" onclick="showKosakataCategory('keluarga')">
+              <h5 class="mb-2">👨‍👩‍👧‍👦 Family</h5>
+              <p class="mb-0 flex-grow-1">Family members and relationships</p>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-12 col-12">
+            <div class="category-card p-3 rounded text-white h-100 d-flex flex-column" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); cursor:pointer; min-height: 120px;" onclick="showKosakataCategory('sehari')">
+              <h5 class="mb-2">🏠 Daily Activities</h5>
+              <p class="mb-0 flex-grow-1">Everyday activities and routines</p>
+            </div>
+          </div>
+        </div>
+        <div id="kosakataList" class="mt-4"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const kosakataData = {
+  makanan: [
+    { word: "Nasi", meaning: "Rice", example: "I eat rice every day.", example_id: "Saya makan nasi setiap hari." },
+    { word: "Air", meaning: "Water", example: "Drinking water is healthy.", example_id: "Saya minum air putih setiap hari." },
+    { word: "Makan", meaning: "Eat", example: "We eat together.", example_id: "Kita makan bersama." },
+    { word: "Minum", meaning: "Drink", example: "I drink hot tea.", example_id: "Saya minum teh panas." },
+    { word: "Roti", meaning: "Bread", example: "I have bread for breakfast.", example_id: "Saya sarapan roti setiap pagi." },
+    { word: "Buah", meaning: "Fruit", example: "Fresh fruit is good for your health.", example_id: "Buah-buahan segar baik untuk kesehatan." },
+    { word: "Sayur", meaning: "Vegetable", example: "Eat vegetables every day.", example_id: "Makan sayur setiap hari itu sehat." },
+    { word: "Daging", meaning: "Meat", example: "Beef is used for the BBQ.", example_id: "Daging sapi sering digunakan untuk BBQ." },
+    { word: "Ikan", meaning: "Fish", example: "Grilled fish is very tasty.", example_id: "Ikan bakar sangat lezat." },
+    { word: "Telur", meaning: "Egg", example: "I make an omelet for breakfast.", example_id: "Saya membuat telur dadar untuk sarapan." },
+    { word: "Susu", meaning: "Milk", example: "I drink milk before bed.", example_id: "Saya minum susu sebelum tidur." },
+    { word: "Keju", meaning: "Cheese", example: "Cheese goes well on toast.", example_id: "Keju enak dipadukan dengan roti bakar." },
+    { word: "Gula", meaning: "Sugar", example: "Add a little sugar.", example_id: "Tambahkan sedikit gula." },
+    { word: "Garam", meaning: "Salt", example: "Salt is used to season food.", example_id: "Garam dipakai untuk memberi rasa pada masakan." },
+    { word: "Kopi", meaning: "Coffee", example: "Morning coffee gives me energy.", example_id: "Kopi pagi memberi saya semangat." }
+  ],
+  keluarga: [
+    { word: "Ayah", meaning: "Father", example: "Father goes to work.", example_id: "Ayah pergi bekerja." },
+    { word: "Ibu", meaning: "Mother", example: "Mother cooks in the kitchen.", example_id: "Ibu memasak di dapur." },
+    { word: "Kakak", meaning: "Older sibling", example: "My older sibling is studying.", example_id: "Kakak saya sedang belajar." },
+    { word: "Adik", meaning: "Younger sibling", example: "My younger sibling is playing in the park.", example_id: "Adik saya sedang bermain di taman." },
+    { word: "Nenek", meaning: "Grandmother", example: "Grandmother tells stories.", example_id: "Nenek bercerita tentang masa lalu." },
+    { word: "Kakek", meaning: "Grandfather", example: "Grandfather reads the newspaper.", example_id: "Kakek membaca koran setiap pagi." },
+    { word: "Paman", meaning: "Uncle", example: "Uncle came to visit.", example_id: "Paman datang berkunjung." },
+    { word: "Bibi", meaning: "Aunt", example: "Aunt brought some gifts.", example_id: "Bibi membawa beberapa hadiah." },
+    { word: "Sepupu", meaning: "Cousin", example: "My cousin plays with us.", example_id: "Sepupu saya bermain bersama kami." },
+    { word: "Keponakan", meaning: "Nephew/Niece", example: "My niece/nephew is very cute.", example_id: "Keponakan saya sangat lucu." },
+    { word: "Suami", meaning: "Husband", example: "The husband left for work.", example_id: "Suami berangkat kerja pagi ini." },
+    { word: "Istri", meaning: "Wife", example: "The wife cooks dinner.", example_id: "Istri memasakkan makan malam." },
+    { word: "Anak", meaning: "Child", example: "The child plays in the yard.", example_id: "Anak itu bermain di halaman." },
+    { word: "Cucu", meaning: "Grandchild", example: "The grandchild visits grandmother.", example_id: "Cucu mengunjungi neneknya." },
+    { word: "Keluarga", meaning: "Family", example: "The family gathers at home.", example_id: "Keluarga berkumpul di rumah." }
+  ],
+  sehari: [
+    { word: "Belajar", meaning: "Study", example: "I study the Indonesian language.", example_id: "Saya belajar bahasa Indonesia." },
+    { word: "Tidur", meaning: "Sleep", example: "Getting enough sleep is important.", example_id: "Saya tidur delapan jam setiap malam." },
+    { word: "Bangun", meaning: "Wake up", example: "Waking up early is healthy.", example_id: "Saya bangun pagi setiap hari." },
+    { word: "Mandi", meaning: "Bath", example: "Take a shower before leaving.", example_id: "Saya mandi setiap pagi." },
+    { word: "Kerja", meaning: "Work", example: "Father goes to work.", example_id: "Ayah pergi bekerja ke kantor." },
+    { word: "Sarapan", meaning: "Breakfast", example: "Have breakfast before school.", example_id: "Saya sarapan sebelum berangkat." },
+    { word: "Olahraga", meaning: "Exercise", example: "Exercise in the morning.", example_id: "Saya berolahraga setiap pagi." },
+    { word: "Membaca", meaning: "Reading", example: "I read a book before bed.", example_id: "Saya membaca buku setiap malam." },
+    { word: "Menulis", meaning: "Writing", example: "I write in my diary every day.", example_id: "Saya menulis di buku harian setiap hari." },
+    { word: "Bermain", meaning: "Playing", example: "Play with friends.", example_id: "Anak-anak bermain di taman." },
+    { word: "Memasak", meaning: "Cooking", example: "Cook dinner.", example_id: "Saya memasak makan malam untuk keluarga." },
+    { word: "Berbelanja", meaning: "Shopping", example: "Go shopping at the market.", example_id: "Ibu pergi berbelanja di pasar." },
+    { word: "Berjalan", meaning: "Walking", example: "Walk to school.", example_id: "Saya berjalan ke sekolah." },
+    { word: "Menonton", meaning: "Watching", example: "Watch a movie at the cinema.", example_id: "Kami menonton film bersama." },
+    { word: "Mendengar", meaning: "Listening", example: "Listen to your favorite music.", example_id: "Saya mendengarkan musik favorit saya." }
+  ]
+};
+
+// Global variables untuk flashcard mode
+let currentCategory = '';
+let currentFlashcardIndex = 0;
+let isFlashcardMode = false;
+
+function showKosakataCategory(category) {
+  currentCategory = category;
+  currentFlashcardIndex = 0;
+  isFlashcardMode = true;
+  
+  // Hide categories dan show flashcard mode
+  document.getElementById('kosakataCategories').style.display = 'none';
+  
+  // Show flashcard mode
+  showFlashcardMode();
+}
+
+function showFlashcardMode() {
+  const categoryNames = {
+    'makanan': 'Food & Drinks',
+    'keluarga': 'Family', 
+    'sehari': 'Daily Activities'
+  };
+  
+  const html = `
+    <div class="flashcard-mode">
+      <div class="text-center mb-4">
+        <h3 class="mb-3">📚 Learn Vocabulary: ${categoryNames[currentCategory]}</h3>
+        <div class="progress mb-3" style="height: 8px;">
+          <div class="progress-bar bg-success" role="progressbar" style="width: ${((currentFlashcardIndex + 1) / kosakataData[currentCategory].length) * 100}%"></div>
+        </div>
+        <p class="text-muted">Card ${currentFlashcardIndex + 1} of ${kosakataData[currentCategory].length}</p>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+          <div class="single-flashcard-wrapper">
+            <div class="flashcard-stack">
+              <div class="flash-top" style="position:relative">
+                <button type="button" class="audio-btn-flashcard top" onclick="playIndonesianAudio(event)" aria-label="Play Indonesian pronunciation">🔊</button>
+                <h2>${kosakataData[currentCategory][currentFlashcardIndex].word}</h2>
+                <p class="ind-example small mb-2 text-white-50 mt-2">${kosakataData[currentCategory][currentFlashcardIndex].example_id || ''}</p>
+                <p class="small text-white-50">Indonesia</p>
+              </div>
+              <div class="flash-bottom">
+                <button type="button" class="audio-btn-flashcard bottom" onclick="playEnglishAudio(event)" aria-label="Play English pronunciation">🔊</button>
+                <h2>${kosakataData[currentCategory][currentFlashcardIndex].meaning}</h2>
+                <p class="example-text small mt-2">${kosakataData[currentCategory][currentFlashcardIndex].example}</p>
+                <p class="small text-muted mt-1">English</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-secondary me-2" onclick="previousFlashcard()" ${currentFlashcardIndex === 0 ? 'disabled' : ''}>
+          ← Previous
+        </button>
+        <button class="btn btn-primary me-2" onclick="nextFlashcard()" ${currentFlashcardIndex === kosakataData[currentCategory].length - 1 ? 'disabled' : ''}>
+          Next →
+        </button>
+        <button class="btn btn-outline-danger" onclick="exitFlashcardMode()">
+          Exit
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('kosakataList').innerHTML = html;
+}
+
+function playKosakataAudio(word) {
+  // Menggunakan text-to-speech untuk memutar audio
+  speakIndonesian(word);
+}
+
+function flipCard(cardContainer) {
+  const flashcard = cardContainer.querySelector('.flashcard');
+  flashcard.classList.toggle('flipped');
+}
+
+function flipSingleCard() {
+  const flashcard = document.getElementById('singleFlashcard');
+  flashcard.classList.toggle('flipped');
+}
+
+// Swipe support: swipe left to show English (back), swipe right to show Indonesian (front)
+;(function(){
+  let startX = null, startY = null, isPointerDown = false;
+
+  function onStart(x,y){ startX = x; startY = y; isPointerDown = true; }
+  function onEnd(x,y){
+    if (!isPointerDown || startX==null) return; isPointerDown = false;
+    const dx = x - startX, dy = y - startY;
+    // require mostly horizontal swipe
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)){
+      const container = document.querySelector('.single-flashcard-container');
+      if (!container) return;
+      const card = container.querySelector('.flashcard');
+      if (!card) return;
+      if (dx < 0) {
+        // swipe left -> show English (back)
+        card.classList.add('flipped');
+      } else {
+        // swipe right -> show Indonesian (front)
+        card.classList.remove('flipped');
+      }
+    }
+    startX = null; startY = null;
+  }
+
+  // Touch events
+  document.addEventListener('touchstart', function(e){
+    const t = e.touches && e.touches[0];
+    if (!t) return;
+    const el = e.target.closest && e.target.closest('.single-flashcard-container');
+    if (el) onStart(t.clientX, t.clientY);
+  }, {passive:true});
+
+  document.addEventListener('touchend', function(e){
+    // touchend has changedTouches empty; use changedTouches
+    const t = e.changedTouches && e.changedTouches[0];
+    if (!t) return;
+    onEnd(t.clientX, t.clientY);
+  });
+
+  // Mouse fallback for desktop: mousedown/mouseup
+  document.addEventListener('mousedown', function(e){
+    const el = e.target.closest && e.target.closest('.single-flashcard-container');
+    if (el) onStart(e.clientX, e.clientY);
+  });
+  document.addEventListener('mouseup', function(e){
+    onEnd(e.clientX, e.clientY);
+  });
+})();
+
+function nextFlashcard() {
+  if (currentFlashcardIndex < kosakataData[currentCategory].length - 1) {
+    currentFlashcardIndex++;
+    showFlashcardMode();
+    
+    // Reset flip state
+    const flashcard = document.getElementById('singleFlashcard');
+    flashcard.classList.remove('flipped');
+  }
+}
+
+// Try to resend any pending quiz submissions saved locally (best-effort)
+async function resendPendingQuizSubmits() {
+  try {
+    const key = 'pendingQuizSubmits';
+    const raw = localStorage.getItem(key);
+    if (!raw) return;
+    let pending = JSON.parse(raw || '[]');
+    if (!Array.isArray(pending) || pending.length === 0) return;
+    console.log('Resending pending quiz submissions', pending.length);
+    const token = localStorage.getItem('token');
+    const headersBase = { 'Content-Type': 'application/json' };
+    if (token) headersBase['Authorization'] = 'Bearer ' + token;
+    const succeeded = [];
+    for (let i = 0; i < pending.length; i++) {
+      const item = pending[i];
+      try {
+        const res = await fetch(`${API_URL}/api/quiz/submit`, { method: 'POST', headers: headersBase, credentials: 'include', body: JSON.stringify(item) });
+        if (res && res.ok) {
+          succeeded.push(i);
+          try { showToast('Previously saved quiz result uploaded successfully.'); } catch(e){}
+        } else {
+          console.warn('Resend failed for pending item', i, res && res.status);
+        }
+      } catch (e) {
+        console.warn('Network error while resending pending quiz item', e);
+      }
+    }
+    // Remove succeeded entries (filter by index)
+    if (succeeded.length > 0) {
+      pending = pending.filter((_, idx) => !succeeded.includes(idx));
+      if (pending.length > 0) localStorage.setItem(key, JSON.stringify(pending)); else localStorage.removeItem(key);
+    }
+  } catch (e) {
+    console.warn('Failed to resend pending quiz submits', e);
+  }
+}
+
+// Auto-attempt resend when the browser goes online
+window.addEventListener('online', function() {
+  try { resendPendingQuizSubmits(); } catch(e) { console.warn('online handler failed', e); }
+});
+
+// Try immediately on load (non-blocking)
+try { resendPendingQuizSubmits(); } catch(e) { /* ignore */ }
+
+function previousFlashcard() {
+  if (currentFlashcardIndex > 0) {
+    currentFlashcardIndex--;
+    showFlashcardMode();
+    
+    // Reset flip state
+    const flashcard = document.getElementById('singleFlashcard');
+    flashcard.classList.remove('flipped');
+  }
+}
+
+function exitFlashcardMode() {
+  isFlashcardMode = false;
+  
+  // Show categories again
+  document.getElementById('kosakataCategories').style.display = '';
+  document.getElementById('kosakataList').innerHTML = '';
+  document.getElementById('searchKosakata').value = '';
+}
+
+
+
+document.getElementById('searchKosakata').addEventListener('input', function() {
+  const val = this.value.toLowerCase();
+  let results = [];
+  Object.values(kosakataData).forEach(arr => {
+    arr.forEach(item => {
+      if (
+        item.word.toLowerCase().includes(val) ||
+        item.meaning.toLowerCase().includes(val) ||
+        item.example.toLowerCase().includes(val)
+      ) {
+        results.push(item);
+      }
+    });
+  });
+  let html = '<div class="row g-3">';
+  
+  results.forEach((item, index) => {
+    html += `
+      <div class="col-md-4 col-sm-6 col-12">
+        <div class="flashcard-container" onclick="flipCard(this)">
+          <div class="flashcard">
+            <div class="flashcard-front">
+              <div class="flashcard-content">
+                <h4 class="text-center">${item.word}</h4>
+                <p class="text-center text-muted small">Click to see the meaning</p>
+              </div>
+            </div>
+            <div class="flashcard-back">
+              <div class="flashcard-content">
+                <h4 class="text-center text-primary">${item.meaning}</h4>
+                <p class="text-center example-text">${item.example}</p>
+                <p class="text-center text-muted small">Click to go back</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  html += '</div>';
+  document.getElementById('kosakataList').innerHTML = html;
+});
+
+// Show modal from main page
+function showKosakataModal() {
+  document.getElementById('kosakataList').innerHTML = '';
+  document.getElementById('searchKosakata').value = '';
+  document.getElementById('kosakataCategories').style.display = '';
+  const kosakataModal = new bootstrap.Modal(document.getElementById('kosakataModal'));
+  kosakataModal.show();
+}
+
+// Inisialisasi saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+  // Ganti fungsi Try Now untuk membuka modal kosakata yang lebih lengkap
+  const tryNowBtn = document.querySelector('button[onclick="showVocabPopup()"]');
+  if (tryNowBtn) {
+    tryNowBtn.setAttribute('onclick', 'showKosakataModal()');
+  }
+});
+</script>
+        <!--Features-->
+        <!-- Footer -->
+        <!-- Profile section removed -->
+        <section class="footer bg-danger text-white py-5">
+        <div class="container">
+            <div class="row gy-4">
+
+            <!-- Logo & Deskripsi -->
+            <div class="col-md-4">
+                <div class="d-flex align-items-center mb-3">
+                <img src="assets/icon/bi.png" alt="Logo" width="40" height="40" class="me-2 rounded">
+                <h3 class="fw-bold mb-0">Learn Indonesian</h3>
+                </div>
+                <p class="lh-lg opacity-75">
+                Your comprehensive platform for mastering Indonesian language. 
+                Interactive lessons, vocabulary building, and cultural insights.
+                </p>
+            </div>
+
+            <!-- Menu -->
+            <div class="col-md-4 d-flex flex-column">
+                <h4 class="fw-bold mb-3">Navigation</h4>
+                <a href="#home" class="text-white text-decoration-none mb-2">Home</a>
+                <a href="#features" class="text-white text-decoration-none mb-2">Features</a>
+                <a href="#about" class="text-white text-decoration-none mb-2">About Us</a>
+                <a href="login.html" class="text-white text-decoration-none mb-2">Login</a>
+            </div>
+
+            <!-- Contact Us -->
+            <div class="col-md-4">
+                <h4 class="fw-bold mb-3">Contact Us</h4>
+                <p class="d-flex align-items-center gap-2 mb-2">
+                <i class="fa-solid fa-envelope"></i> support@learnindonesian.com
+                </p>
+                <p class="d-flex align-items-center gap-2 mb-2">
+                <i class="fa-solid fa-phone"></i> +62 (021) 1962 2391 118
+                </p>
+                <p class="d-flex align-items-center gap-2 mb-0 lh-lg">
+                <i class="fa-solid fa-location-dot"></i> Jakarta, Indonesia
+                </p>
+            </div>
+
+            <div class="copyright text-center text-white">
+                <p class="lh-lg">&copy; Copyright by <span class="fw-bold">Belajar Indo</span> 2025, All Rights Reserved </p>
+            </div>
+            </div>
+        </div>
+        </section>
+        <!-- Footer -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <!-- Toast container -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+      <div id="liveToast" class="toast" role="status" aria-live="polite" aria-atomic="true">
+        <div class="toast-header">
+          <strong class="me-auto">Belajar Indo</strong>
+          <small>Now</small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toast-body">
+          Saved
+        </div>
+      </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="historyModalLabel">Quiz History</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="history-list">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+          <!-- Quiz Result Modal -->
+          <div class="modal fade" id="quizResultModal" tabindex="-1" aria-labelledby="quizResultModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="quizResultModalLabel">Quiz Result</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                  <div style="font-size:48px;font-weight:700" id="quizResultScore">0%</div>
+                  <div class="muted small mt-2" id="quizResultDetails">0 / 0 correct</div>
+                  <div class="muted small mt-1" id="quizResultTime">Time: 0s</div>
+                  <div class="mt-3" id="quizResultMessage"></div>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                  <div>
+                    <button type="button" class="btn btn-outline-secondary" id="quizResultViewHistory">View History</button>
+                  </div>
+                  <div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="quizResultRestart">Restart Quiz</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+    <script>
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded - setting up quiz');
+        // Try restoring transient state from sessionStorage (survives refresh)
+        try {
+          const raw = sessionStorage.getItem('quiz_transient_state');
+          if (raw) {
+            const st = JSON.parse(raw);
+            if (typeof st.currentQuestion === 'number') currentQuizQuestion = st.currentQuestion;
+            if (typeof st.quizScore === 'number') quizScore = st.quizScore;
+            if (st.quizStartTime) quizStartTime = st.quizStartTime;
+            console.log('Restored transient quiz state from sessionStorage', st);
+          }
+        } catch (e) { console.warn('Failed to restore transient quiz state', e); }
+        
+        // Quiz Data
+        const quizData = [
+            {
+                question: "What does 'Rumah' mean in English?",
+                options: ["House", "School", "Car", "Book"],
+                correct: 0
+            },
+            {
+                question: "What does 'Sekolah' mean in English?",
+                options: ["House", "School", "Car", "Book"],
+                correct: 1
+            },
+            {
+                question: "What does 'Mobil' mean in English?",
+                options: ["House", "School", "Car", "Book"],
+                correct: 2
+            },
+            {
+                question: "What does 'Buku' mean in English?",
+                options: ["House", "School", "Car", "Book"],
+                correct: 3
+            },
+            {
+                question: "What does 'Makan' mean in English?",
+                options: ["Sleep", "Eat", "Run", "Study"],
+                correct: 1
+            }
+        ];
+
+  let currentQuizQuestion = 0;
+  let quizScore = 0;
+  let selectedAnswer = -1;
+  let quizStartTime = null; // timestamp when quiz started
+  // Keep window-level state in sync for the shared save/load helpers
+  function syncWindowState() {
+    try {
+      window.quizData = quizData;
+      window.quizScore = quizScore;
+      window.quizStartTime = quizStartTime;
+      window.currentQuestion = currentQuizQuestion;
+      // persist minimal transient state to sessionStorage so refresh doesn't lose progress
+      try {
+        const s = { currentQuestion: currentQuizQuestion, quizScore: quizScore, quizStartTime: quizStartTime, state: window.__quiz_state || null };
+        sessionStorage.setItem('quiz_transient_state', JSON.stringify(s));
+      } catch (se) { /* ignore */ }
+    } catch (e) { console.warn('syncWindowState failed', e); }
+  }
+        
+        // Quiz Functions
+        function showQuizPopup() {
+            console.log('Quiz popup function called');
+            try {
+                const quizModal = document.getElementById('quizModal');
+                console.log('Quiz modal element:', quizModal);
+                
+                if (quizModal && typeof bootstrap !== 'undefined') {
+                    const modal = new bootstrap.Modal(quizModal);
+                        // initialize to defaults then attempt to restore progress
+                        // restartQuiz();
+                        // sync state so save/load helpers read correct values
+                        syncWindowState();
+                        // try to load saved progress (best-effort)
+                        // Try to restore transient state from sessionStorage first (faster) then localStorage
+                        try {
+                          const sessRaw = sessionStorage.getItem('quiz_transient_state');
+                          if (sessRaw) {
+                            const sess = JSON.parse(sessRaw);
+                            if (sess && typeof sess === 'object') {
+                              currentQuizQuestion = typeof sess.currentQuestion === 'number' ? sess.currentQuestion : currentQuizQuestion;
+                              quizScore = typeof sess.quizScore === 'number' ? sess.quizScore : quizScore;
+                              quizStartTime = sess.quizStartTime || quizStartTime || Date.now();
+                              if (sess.state && typeof sess.state === 'object') window.__quiz_state = sess.state;
+                            }
+                          }
+                        } catch (e) { console.warn('Failed to restore from sessionStorage', e); }
+
+                        // If nothing in sessionStorage, fall back to persistent saved progress (localStorage)
+                        if ((!window.__quiz_state || Object.keys(window.__quiz_state).length === 0) && window.loadQuizProgress) {
+                          try {
+                            window.loadQuizProgress({ quizCategory: 'vocab' }).then(res => {
+                              if (res) {
+                                currentQuizQuestion = (res.currentQuestion != null) ? res.currentQuestion : (window.currentQuestion || currentQuizQuestion);
+                                if (typeof res.progress === 'number' && Array.isArray(quizData) && quizData.length > 0) {
+                                  quizScore = Math.round((res.progress / 100) * quizData.length);
+                                }
+                                if (res.state && typeof res.state === 'object') window.__quiz_state = res.state;
+                                syncWindowState();
+                                loadQuizQuestion();
+                              }
+                            }).catch(err => { console.warn('loadQuizProgress failed', err); });
+                          } catch (e) { console.warn('loadQuizProgress invocation failed', e); }
+                        }
+
+                        modal.show();
+                        console.log('Quiz modal should be showing now');
+                } else {
+                    console.error('Quiz modal element not found or Bootstrap not loaded');
+                    alert('Quiz modal not available. Please try refreshing the page.');
+                }
+            } catch (error) {
+                console.error('Error opening quiz modal:', error);
+                alert('Error opening quiz. Please try again.');
+            }
+        }
+        
+        // Quiz Functions
+        // Unified loadQuizQuestion: populates options, applies any saved selection highlight, and updates UI
+        function loadQuizQuestion() {
+            if (!quizData[currentQuizQuestion]) return;
+            const question = quizData[currentQuizQuestion];
+            document.getElementById('quiz-question').textContent = question.question;
+
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach((option, index) => {
+                option.textContent = question.options[index];
+                option.className = 'btn btn-outline-primary quiz-option';
+                option.onclick = function() { selectAnswer(index); };
+            });
+
+            // Reset result UI initially
+            document.getElementById('quiz-result').style.display = 'none';
+            document.getElementById('next-quiz-btn').style.display = 'none';
+            document.getElementById('restart-quiz-btn').style.display = 'none';
+            selectedAnswer = -1;
+
+            // If we have saved per-question selection in window.__quiz_state, apply highlight
+            try {
+              const state = window.__quiz_state || {};
+              const sel = state['q' + currentQuizQuestion];
+              if (typeof sel === 'number') {
+                const correct = quizData[currentQuizQuestion].correct;
+                options.forEach((option, index) => {
+                  option.classList.remove('btn-outline-primary','btn-success','btn-danger','btn-outline-secondary');
+                  if (index === correct) option.classList.add('btn-success');
+                  else if (index === sel && sel !== correct) option.classList.add('btn-danger');
+                  else option.classList.add('btn-outline-secondary');
+                });
+                document.getElementById('quiz-result').style.display = 'block';
+                const resultText = document.getElementById('result-text');
+                if (sel === quizData[currentQuizQuestion].correct) {
+                  resultText.textContent = "Correct! 🎉";
+                  resultText.className = "fw-bold text-success";
+                } else {
+                  resultText.textContent = "Wrong! 😞 The correct answer is: " + quizData[currentQuizQuestion].options[quizData[currentQuizQuestion].correct];
+                  resultText.className = "fw-bold text-danger";
+                }
+                document.getElementById('quiz-score').textContent = quizScore;
+                if (currentQuizQuestion < quizData.length - 1) document.getElementById('next-quiz-btn').style.display = 'inline-block';
+                else document.getElementById('restart-quiz-btn').style.display = 'inline-block';
+              }
+            } catch(e) { console.warn('apply saved selection failed', e); }
+        }
+        
+    function selectAnswer(answerIndex) {
+      selectedAnswer = answerIndex;
+      // save selected answer in transient state map
+      try {
+        window.__quiz_state = window.__quiz_state || {};
+        window.__quiz_state['q' + currentQuizQuestion] = answerIndex;
+      } catch(e){ console.warn('saving __quiz_state failed', e); }
+
+      const options = document.querySelectorAll('.quiz-option');
+      const correct = quizData[currentQuizQuestion].correct;
+
+      options.forEach((option, index) => {
+        option.classList.remove('btn-outline-primary', 'btn-success', 'btn-danger', 'btn-outline-secondary');
+        if (index === correct) {
+          option.classList.add('btn-success');
+        } else if (index === answerIndex && answerIndex !== correct) {
+          option.classList.add('btn-danger');
+        } else {
+          option.classList.add('btn-outline-secondary');
+        }
+      });
+
+      const resultDiv = document.getElementById('quiz-result');
+      const resultText = document.getElementById('result-text');
+
+      if (answerIndex === correct) {
+        quizScore++;
+        resultText.textContent = "Correct! 🎉";
+        resultText.className = "fw-bold text-success";
+      } else {
+        resultText.textContent = "Wrong! 😞 The correct answer is: " + quizData[currentQuizQuestion].options[correct];
+        resultText.className = "fw-bold text-danger";
+      }
+
+      document.getElementById('quiz-score').textContent = quizScore;
+      document.getElementById('total-questions').textContent = quizData.length;
+      resultDiv.style.display = 'block';
+
+      if (currentQuizQuestion < quizData.length - 1) {
+        document.getElementById('next-quiz-btn').style.display = 'inline-block';
+      } else {
+        document.getElementById('restart-quiz-btn').style.display = 'inline-block';
+        const visibleSubmit = document.getElementById('submitQuiz');
+        if (visibleSubmit) visibleSubmit.style.display = 'inline-block';
+      }
+
+      // update shared state, persist transient state locally
+      syncWindowState();
+      try { sessionStorage.setItem('quiz_transient_state', JSON.stringify({ currentQuestion: currentQuizQuestion, quizScore: quizScore, quizStartTime: quizStartTime, state: window.__quiz_state || null })); } catch(e){}
+      if (window.saveQuizProgress) {
+        try { window.saveQuizProgress({ quizCategory: 'vocab', currentQuestion: currentQuizQuestion, state: window.__quiz_state || null }).catch(()=>{}); } catch(e){ console.warn('saveQuizProgress invoke failed', e); }
+      }
+    }
+        
+        function nextQuizQuestion() {
+            currentQuizQuestion++;
+            loadQuizQuestion();
+            // persist progress after moving to next question
+            syncWindowState();
+            if (window.saveQuizProgress) {
+              try { window.saveQuizProgress({ quizCategory: 'vocab', currentQuestion: currentQuizQuestion }).catch(()=>{}); } catch(e){ console.warn('saveQuizProgress invoke failed', e); }
+            }
+        }
+        
+        function restartQuiz() {
+          currentQuizQuestion = 0;
+          quizScore = 0;
+          // reset timer
+          quizStartTime = Date.now();
+          loadQuizQuestion();
+          syncWindowState();
+          if (window.saveQuizProgress) {
+            try { window.saveQuizProgress({ quizCategory: 'vocab', currentQuestion: currentQuizQuestion }).catch(()=>{}); } catch(e){ console.warn('saveQuizProgress failed', e); }
+          }
+        }
+    
+        
+        // Set up event listeners
+        const quizDropdownLink = document.getElementById('quiz-dropdown-link');
+        const tryQuizBtn = document.getElementById('try-quiz-btn');
+        const nextQuizBtn = document.getElementById('next-quiz-btn');
+        const restartQuizBtn = document.getElementById('restart-quiz-btn');
+        const submitQuizBtn = document.getElementById('submit-quiz-btn');
+        const viewHistoryBtn = document.getElementById('view-history-btn');
+        
+        console.log('Quiz elements found:', {
+            dropdown: !!quizDropdownLink,
+            tryBtn: !!tryQuizBtn,
+            nextBtn: !!nextQuizBtn,
+            restartBtn: !!restartQuizBtn
+        });
+        
+        if (quizDropdownLink) {
+            quizDropdownLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Quiz dropdown clicked');
+                showQuizPopup();
+            });
+        }
+        
+        if (tryQuizBtn) {
+            tryQuizBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Try Quiz button clicked');
+                showQuizPopup();
+            });
+        }
+        
+        if (nextQuizBtn) {
+            nextQuizBtn.addEventListener('click', nextQuizQuestion);
+        }
+        
+        if (restartQuizBtn) {
+            restartQuizBtn.addEventListener('click', function() {
+                restartQuiz();
+            });
+        }
+
+    // Attach explicit submit handler (supports either #submit-quiz-btn or #submitQuiz)
+    // (some markup uses id="submitQuiz" while older code referenced "submit-quiz-btn")
+    const explicitSubmitBtn = document.getElementById('submit-quiz-btn') || document.getElementById('submitQuiz');
+    if (explicitSubmitBtn) {
+      explicitSubmitBtn.addEventListener('click', async function() {
+        // explicit submit: compute payload and send
+        const totalQuestions = (window.quizData && window.quizData.length) ? window.quizData.length : quizData.length;
+        const correctAnswers = typeof quizScore === 'number' ? quizScore : (window.quizScore || 0);
+        const scorePercent = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+        const timeSpentSeconds = quizStartTime ? Math.round((Date.now() - quizStartTime) / 1000) : 0;
+        // try to persist final progress before submit
+        try { if (window.saveQuizProgress) await window.saveQuizProgress({ quizCategory: 'vocab', currentQuestion: currentQuizQuestion }); } catch(e){ console.warn('saveQuizProgress before submit failed', e); }
+        await submitQuizResult({ quizType: 'vocab', score: scorePercent, totalQuestions, correctAnswers, timeSpent: timeSpentSeconds });
+        // Do not auto-restart here. The quiz result modal will be shown by submitQuizResult
+        // and the user can choose to restart from the modal's Restart button.
+      });
+    }
+
+    if (viewHistoryBtn) {
+      viewHistoryBtn.addEventListener('click', async function() {
+        try {
+          const token = localStorage.getItem('token');
+          const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+          const res = await fetch(`${API_URL}/api/quiz/history`, { credentials: 'include', headers });
+          if (!res.ok) throw new Error('Failed to fetch history');
+          const json = await res.json();
+          renderHistory(json.results || []);
+          const hm = new bootstrap.Modal(document.getElementById('historyModal'));
+          hm.show();
+        } catch (err) {
+          console.error('Failed to load history', err);
+          alert('Failed to load history. Make sure you are logged in.');
+        }
+      });
+    }
+
+    // Quiz Result modal buttons (Restart, View History) wiring
+    try {
+      const qrRestart = document.getElementById('quizResultRestart');
+      if (qrRestart) {
+        qrRestart.addEventListener('click', function() {
+          try {
+            restartQuiz();
+            const modalEl = document.getElementById('quizResultModal');
+            const inst = bootstrap.Modal.getInstance(modalEl) || null;
+            if (inst) inst.hide();
+          } catch(e) { console.warn('Failed to restart quiz from result modal', e); }
+        });
+      }
+
+      const qrViewHistory = document.getElementById('quizResultViewHistory');
+      if (qrViewHistory) {
+        qrViewHistory.addEventListener('click', async function() {
+          try {
+            const token = localStorage.getItem('token');
+            const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+            const res = await fetch(`${API_URL}/api/quiz/history`, { credentials: 'include', headers });
+            if (!res.ok) throw new Error('Failed to fetch history');
+            const json = await res.json();
+            renderHistory(json.results || []);
+            const hm = new bootstrap.Modal(document.getElementById('historyModal'));
+            hm.show();
+          } catch (err) {
+            console.error('Failed to load history', err);
+            alert('Failed to load history. Make sure you are logged in.');
+          }
+        });
+      }
+    } catch(e) { console.warn('quiz result modal wiring failed', e); }
+        
+        console.log('Quiz setup complete');
+    });
+
+    // Save transient state before page unload (so refresh keeps progress)
+    window.addEventListener('beforeunload', function(){
+      try {
+        const s = { currentQuestion: currentQuizQuestion, quizScore: quizScore, quizStartTime: quizStartTime };
+        sessionStorage.setItem('quiz_transient_state', JSON.stringify(s));
+      } catch(e){}
+      // best-effort: try to save progress to server
+      try { if (window.saveQuizProgress) window.saveQuizProgress({ quizCategory: 'vocab', currentQuestion: currentQuizQuestion }); } catch(e){}
+    });
+    
+  // Submit quiz result to backend
+  async function submitQuizResult(payload) {
+    try {
+      console.log('Submitting quiz result', payload);
+      // include Authorization header from localStorage token when available
+      const token = localStorage.getItem('token');
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      console.log('submitQuizResult using token?', !!token);
+
+      const res = await fetch(`${API_URL}/api/quiz/submit`, {
+        method: 'POST',
+        headers,
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      console.log('submitQuizResult response', { status: res.status, body: data });
+      // If unauthorized, provide a clearer prompt to login
+      if (res.status === 401 || (data && /no token|unauthorized/i.test(data.error || ''))) {
+        // If we have no token locally, suggest logging in. If we do, suggest re-login.
+        const hasLocalToken = !!localStorage.getItem('token');
+        const msg = hasLocalToken ? 'Session expired or invalid. Please login again.' : 'You need to login to save quiz results. Please login first.';
+        try { showModal('Action Required', msg, 'warning'); } catch (e) { showToast(msg); }
+        console.warn('Quiz submit blocked - unauthorized', data);
+        return;
+      }
+      if (res.ok) {
+        console.log('Quiz saved on server', data);
+        try { showToast('Quiz saved on server! Your score: ' + ((data && data.result && data.result.score) || payload.score || 0)); } catch(e){}
+        // After server save, fetch latest history from backend and notify profile page
+        try {
+          const token = localStorage.getItem('token');
+          const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+          const histRes = await fetch(`${API_URL}/api/quiz/history`, { method: 'GET', headers, credentials: 'include' });
+          if (histRes.ok) {
+            const json = await histRes.json();
+            // fire event so profile (if open) re-renders using DB results
+            window.dispatchEvent(new CustomEvent('quiz:submitted', { detail: json.results && json.results[0] ? json.results[0] : data.result }));
+          } else {
+            console.warn('Failed to fetch history after submit', histRes.status);
+          }
+        } catch(e) { console.warn('Error fetching history after submit', e); }
+
+        // Populate and show the Quiz Result Modal so the user sees their result
+        try {
+          const result = (data && data.result) ? data.result : payload || {};
+          const scorePercent = (typeof result.score !== 'undefined') ? result.score : (payload && payload.score) || 0;
+          const totalQuestions = result.totalQuestions || payload.totalQuestions || 0;
+          const correctAnswers = result.correctAnswers || payload.correctAnswers || 0;
+          const timeSpent = result.timeSpent || payload.timeSpent || 0;
+
+          const elScore = document.getElementById('quizResultScore');
+          const elDetails = document.getElementById('quizResultDetails');
+          const elTime = document.getElementById('quizResultTime');
+          const elMsg = document.getElementById('quizResultMessage');
+
+          if (elScore) elScore.textContent = (scorePercent || 0) + '%';
+          if (elDetails) elDetails.textContent = `${correctAnswers} / ${totalQuestions} correct`;
+          if (elTime) elTime.textContent = `Time: ${timeSpent}s`;
+          if (elMsg) {
+            let msg = '';
+            if (scorePercent >= 85) msg = 'Excellent work!';
+            else if (scorePercent >= 60) msg = 'Good job — keep practicing!';
+            else msg = 'Keep trying — you can improve with practice.';
+            elMsg.textContent = msg;
+          }
+
+          const modalEl = document.getElementById('quizResultModal');
+          if (modalEl) {
+            const qm = new bootstrap.Modal(modalEl);
+            qm.show();
+          }
+        } catch (e) {
+          console.warn('Failed to populate/show quiz result modal', e);
+        }
+      } else {
+        console.error('Server error saving quiz', data);
+        showToast('Failed to save quiz: ' + (data.error || 'Server error'));
+      }
+    } catch (err) {
+      console.error('Network or other error submitting quiz', err);
+      // Fallback: save the payload locally so the user still sees results and we can retry later
+      try {
+        // store pending submissions array in localStorage
+        const key = 'pendingQuizSubmits';
+        const existing = JSON.parse(localStorage.getItem(key) || '[]');
+        // include a timestamp so we can show/inspect later
+        const toSave = Object.assign({}, payload, { _savedAt: Date.now() });
+        existing.push(toSave);
+        localStorage.setItem(key, JSON.stringify(existing));
+        showToast('You appear offline — quiz result saved locally and will be retried automatically.');
+
+        // Show the quiz result modal with the local payload so the user still sees their score
+        try {
+          const result = payload || {};
+          const scorePercent = (typeof result.score !== 'undefined') ? result.score : 0;
+          const totalQuestions = result.totalQuestions || 0;
+          const correctAnswers = result.correctAnswers || 0;
+          const timeSpent = result.timeSpent || 0;
+
+          const elScore = document.getElementById('quizResultScore');
+          const elDetails = document.getElementById('quizResultDetails');
+          const elTime = document.getElementById('quizResultTime');
+          const elMsg = document.getElementById('quizResultMessage');
+
+          if (elScore) elScore.textContent = (scorePercent || 0) + '%';
+          if (elDetails) elDetails.textContent = `${correctAnswers} / ${totalQuestions} correct`;
+          if (elTime) elTime.textContent = `Time: ${timeSpent}s`;
+          if (elMsg) elMsg.textContent = 'Saved locally — will retry when online.';
+
+          const modalEl = document.getElementById('quizResultModal');
+          if (modalEl) {
+            const qm = new bootstrap.Modal(modalEl);
+            qm.show();
+          }
+        } catch (e) { console.warn('Failed to populate local quiz result modal', e); }
+      } catch (e) {
+        console.error('Failed to save pending quiz result locally', e);
+        // As a last resort, show the old alert so user is not left without feedback
+        alert('Failed to submit quiz result. Check console for details.');
+      }
+    }
+  }
+
+  // helper to show a bootstrap toast (requires DOM elements with ids liveToast and toast-body)
+  function showToast(message) {
+    try {
+      const toastEl = document.getElementById('liveToast');
+      const toastBody = document.getElementById('toast-body');
+      if (!toastEl || !toastBody) {
+        // fallback: simple alert
+        alert(message);
+        return;
+      }
+      toastBody.textContent = message;
+      const toast = new bootstrap.Toast(toastEl);
+      toast.show();
+    } catch (e) {
+      console.error('Failed to show toast', e);
+    }
+  }
+
+  function renderHistory(results) {
+    const container = document.getElementById('history-list');
+    if (!container) return;
+    if (!results || results.length === 0) {
+      container.innerHTML = '<p>No quiz history found.</p>';
+      return;
+    }
+    let html = '<div class="list-group">';
+    results.forEach((r, idx) => {
+      const rid = 'hist-' + idx + '-' + (r.id || Math.floor(Math.random()*10000));
+      html += `<div class="list-group-item">`;
+      html += `<div class="d-flex w-100 justify-content-between"><h5 class="mb-1">${r.quizCategory} - ${r.score}%</h5><small>${new Date(r.completedAt).toLocaleString()}</small></div>`;
+      html += `<p class="mb-1">Correct: ${r.correctAnswers}/${r.totalQuestions} · Time: ${r.timeSpent}s</p>`;
+      html += `<div><button class="btn btn-sm btn-link" data-target="${rid}" onclick="(function(t){const el=document.getElementById(t); el.style.display = el.style.display==='none'?'block':'none';})('${rid}')">Details</button></div>`;
+      html += `<pre id="${rid}" style="display:none;white-space:pre-wrap;background:#f8f9fa;border-radius:6px;padding:8px;margin-top:8px;">${JSON.stringify(r,null,2)}</pre>`;
+      html += `</div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  }
+    </script>
+
+    <!-- Embedded profile loader removed -->
+    <script>
+      // Ensure quiz globals exist before quiz.js executes
+      if (!window.quizData) {
+        window.quizData = [
+          { question: "What does 'Makan' mean in English?", options: ["Sleep", "Eat", "Run", "Study"], correct: 1 }
+        ];
+      }
+      // initialize score and start time if not already set
+      window.quizScore = (typeof window.quizScore === 'number') ? window.quizScore : 0;
+      window.quizStartTime = window.quizStartTime || Date.now();
+    </script>
+    <script>
+      // Development-only fallback: do not override production deployments
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        window.API_URL = window.API_URL || "http://localhost:3000";
+      }
+    </script>
+    <script src="quiz.js" defer></script>
+    <script>
+      // Show profile only when `localStorage.user` contains a parseable user object.
+      document.addEventListener('DOMContentLoaded', function() {
+        try {
+          const userRaw = localStorage.getItem('user');
+          const navProfileWrapper = document.getElementById('navProfileWrapper');
+          const navProfileBtnWrapper = document.getElementById('navProfileBtnWrapper');
+          const loginBtn = document.getElementById('loginBtn');
+
+          let hasUser = false;
+          if (userRaw) {
+            try {
+              const u = JSON.parse(userRaw);
+              if (u && typeof u === 'object') hasUser = true;
+            } catch (e) { hasUser = false; }
+          }
+
+          if (navProfileWrapper) navProfileWrapper.style.display = hasUser ? '' : 'none';
+          if (navProfileBtnWrapper) navProfileBtnWrapper.style.display = hasUser ? '' : 'none';
+          if (loginBtn) loginBtn.style.display = hasUser ? 'none' : '';
+
+          if (hasUser) {
+            try {
+              const profileLink = document.getElementById('navProfileLink');
+              if (profileLink) profileLink.textContent = 'Profile';
+            } catch (e) { /* ignore */ }
+          }
+        } catch (e) {
+          console.warn('Navbar auth toggle failed', e);
+        }
+      });
+    </script>
+  </body>
+</html>

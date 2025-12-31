@@ -1,0 +1,73 @@
+PrismaClientValidationError: 
+Invalid `prisma.quizResult.create()` invocation in
+C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\src\routes\quiz.js:15:44
+
+  12 const userId = req.userId;
+  13 
+  14 // Prisma schema expects `quizCategory` field — map quizType -> quizCategory
+→ 15 const result = await prisma.quizResult.create({
+       data: {
+         userId: 1,
+         quizCategory: "vocab",
+         score: 100,
+         correctAnswers: undefined,
+         timeSpent: undefined,
+     +   totalQuestions: Int
+       }
+     })
+
+Argument `totalQuestions` is missing.
+    at Nn (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at ei.handleRequestError (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:121:6911)
+    at ei.handleAndLogRequestError (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:121:6593)
+    at ei.request (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:121:6300)
+    at async a (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:130:9551)
+    at async C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\src\routes\quiz.js:15:20 {
+  clientVersion: '6.17.0'
+}
+PrismaClientValidationError: 
+Invalid `prisma.quizResult.create()` invocation:
+
+{
+  data: {
+    userId: 1,
+    quizCategory: "vocab",
+    score: 100,
+    correctAnswers: undefined,
+    timeSpent: undefined,
++   totalQuestions: Int
+  }
+}
+
+Argument `totalQuestions` is missing.
+    at Nn (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at ei.handleRequestError (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:121:6911)
+    at ei.handleAndLogRequestError (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:121:6593)
+    at ei.request (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:121:6300)
+    at async a (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:130:9551)
+    at async C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\src\routes\quiz.js:15:20 {
+  clientVersion: '6.17.0'
+}
+PrismaClientValidationError: 
+Invalid `prisma.quizResult.create()` invocation:
+
+{
+  data: {
+    userId: 1,
+    quizCategory: "vocab",
+    score: 100,
+    correctAnswers: undefined,
+    timeSpent: undefined,
++   totalQuestions: Int
+  }
+}
+
+Argument `totalQuestions` is missing.
+    at Nn (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at ei.handleRequestError (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:121:6911)
+    at ei.handleAndLogRequestError (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:121:6593)
+    at ei.request (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:121:6300)
+    at async a (C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\node_modules\@prisma\client\runtime\library.js:130:9551)
+    at async C:\Users\laras\BahASA C\SEMESTER 5\IF2010_OOP\BelajarIndo\belajarindo-backend\src\routes\quiz.js:15:20 {
+  clientVersion: '6.17.0'
+}

@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String   // hashed password
+  salt      String   // untuk bcrypt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  quizProgress  QuizProgress[]
+  quizResults   QuizResult[]
+  vocabProgress VocabProgress[]
+}
+
+model QuizProgress {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  quizCategory    String   // 'basic', 'intermediate', 'advanced'
+  progress        Int      @default(0) // 0-100
+  currentQuestion Int      @default(0)
+  lastAccessed    DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, quizCategory])
+  @@index([userId])
+}
+
+model QuizResult {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  quizCategory   String
+  score          Float    // nilai 0-100
+  totalQuestions Int
+  correctAnswers Int
+  timeSpent      Int      // dalam detik
+  completedAt    DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+}
+
+model VocabProgress {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  category     String   // 'makanan', 'keluarga', 'sehari'
+  wordsLearned Json     // array of word IDs yang sudah dipelajari
+  lastAccessed DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, category])
+  @@index([userId])
+}
