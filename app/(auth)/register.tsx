@@ -11,9 +11,10 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { authService } from '../services/api';
-import CustomModal from '../components/CustomModal';
-import GradientButton from '../components/GradientButton';
+// FIX: Import dari root, naik 2 level
+import { authService } from '../../services/api';
+import CustomModal from '../../components/CustomModal';
+import GradientButton from '../../components/GradientButton';
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');
@@ -26,9 +27,9 @@ export default function RegisterScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [modalMessage, setModalMessage] = useState('');
-  const [modalType, setModalType] = useState('success');
+  const [modalType, setModalType] = useState<'success' | 'error' | 'warning'>('success');
 
-  const showModal = (title: string, message: string, type = 'success') => {
+  const showModal = (title: string, message: string, type: 'success' | 'error' | 'warning' = 'success') => {
     setModalTitle(title);
     setModalMessage(message);
     setModalType(type);
