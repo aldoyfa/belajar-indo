@@ -10,6 +10,9 @@ export default function Index() {
 
   const checkAuth = async () => {
     try {
+      // Add small delay for better UX
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       const token = await AsyncStorage.getItem('token');
       
       if (token) {
@@ -21,6 +24,7 @@ export default function Index() {
       }
     } catch (error) {
       console.error('Error checking auth:', error);
+      // On error, redirect to login
       router.replace('/(auth)/login');
     }
   };
