@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { quizService } from '../services/api';
-import Card from '../components/Card';
-import GradientButton from '../components/GradientButton';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Card from '../components/Card.';
 import CustomModal from '../components/CustomModal';
+import GradientButton from '../components/GradientButton';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { quizService } from '../services/api';
 
 // Sample quiz data
 const QUIZ_DATA = [

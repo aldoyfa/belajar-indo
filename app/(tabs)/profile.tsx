@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  RefreshControl,
-} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
-import { LineChart } from 'react-native-chart-kit';
-import { Dimensions } from 'react-native';
 import { router } from 'expo-router';
-import { quizService, authService } from '../services/api';
-import Card from '../components/Card';
+import { useEffect, useState } from 'react';
+import {
+  Dimensions,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { LineChart } from 'react-native-chart-kit';
+import Card from '../components/Card.';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { authService, quizService } from '../services/api';
 
 const screenWidth = Dimensions.get('window').width;
 

@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Animated,
-} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { vocabService } from '../services/api';
-import Card from '../components/Card';
+import { useEffect, useState } from 'react';
+import {
+  Animated,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import GradientButton from '../components/GradientButton';
+import { vocabService } from '../services/api';
 
 // Sample vocabulary data (flashcards)
 const VOCAB_DATA = [
