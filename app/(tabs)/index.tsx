@@ -9,11 +9,13 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import Card from '../components/Card.';
-import LoadingSpinner from '../components/LoadingSpinner';
+
+// ✅ FIXED: Import dari root menggunakan ../../
+import Card from '../../components/Card.';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 export default function HomeScreen() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,7 +39,7 @@ export default function HomeScreen() {
     try {
       await AsyncStorage.removeItem('token');
       await AsyncStorage.removeItem('user');
-      router.replace('/login');
+      router.replace('/(auth)/login');
     } catch (error) {
       console.error('Error logging out:', error);
     }

@@ -11,7 +11,8 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-// FIX: Import dari root, naik 2 level
+
+// ✅ FIXED: Import dari root menggunakan ../../
 import { authService } from '../../services/api';
 import CustomModal from '../../components/CustomModal';
 import GradientButton from '../../components/GradientButton';
