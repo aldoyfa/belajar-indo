@@ -1,8 +1,18 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const GradientButton = ({ 
+interface GradientButtonProps {
+  onPress: () => void;
+  title: string;
+  colors?: string[];
+  disabled?: boolean;
+  loading?: boolean;
+  style?: ViewStyle;
+  textStyle?: TextStyle;
+}
+
+const GradientButton: React.FC<GradientButtonProps> = ({ 
   onPress, 
   title, 
   colors = ['#667eea', '#764ba2'],

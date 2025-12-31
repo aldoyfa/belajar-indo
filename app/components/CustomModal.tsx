@@ -1,7 +1,21 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const CustomModal = ({ visible, onClose, title, message, type = 'success' }) => {
+interface CustomModalProps {
+  visible: boolean;
+  onClose: () => void;
+  title: string;
+  message: string;
+  type?: 'success' | 'error' | 'warning';
+}
+
+const CustomModal: React.FC<CustomModalProps> = ({ 
+  visible, 
+  onClose, 
+  title, 
+  message, 
+  type = 'success' 
+}) => {
   const getIconAndColor = () => {
     switch (type) {
       case 'error':
