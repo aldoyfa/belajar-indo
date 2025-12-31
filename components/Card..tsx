@@ -1,12 +1,26 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { ReactNode } from 'react';
+import { View, StyleSheet, ViewStyle, ColorValue } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const Card = ({ children, style, gradient = false, colors = ['#ffffff', '#fbfbff'] }) => {
+export interface CardProps {
+  children?: ReactNode;
+  style?: ViewStyle;
+  gradient?: boolean;
+  colors?: string[];
+}
+
+export function Card({ 
+  children, 
+  style, 
+  gradient = false, 
+  colors = ['#ffffff', '#fbfbff'] 
+}: CardProps = {}): JSX.Element {
+  const gradientColors = colors as [ColorValue, ColorValue, ...ColorValue[]];
+  
   if (gradient) {
     return (
       <LinearGradient
-        colors={colors}
+        colors={gradientColors}
         style={[styles.card, style]}
       >
         {children}
@@ -19,7 +33,7 @@ const Card = ({ children, style, gradient = false, colors = ['#ffffff', '#fbfbff
       {children}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   card: {
@@ -34,5 +48,3 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
 });
-
-export default Card;

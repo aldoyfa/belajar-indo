@@ -38,7 +38,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 // Ensure preflight requests receive the same CORS headers
-app.options('*', cors(corsOptions));
+app.options('/(.*)', cors(corsOptions));
 
 // Serve static uploads (before routes so frontend can fetch files)
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));

@@ -12,10 +12,11 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 
-// ✅ FIXED: Import dari root menggunakan ../../
-import { authService } from '../../services/api';
-import CustomModal from '../../components/CustomModal';
-import GradientButton from '../../components/GradientButton';
+// ✅ Import services dan components
+import { authService } from '../../services/auth';
+import { CustomModal } from '../../components/CustomModal';
+import { GradientButton } from '../../components/GradientButton';
+import type { LoginCredentials } from '../../types';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -47,10 +48,11 @@ export default function LoginScreen() {
     }
 
     setLoading(true);
-    const result = await authService.login(email.trim(), password);
+    const credentials: LoginCredentials = { email: email.trim(), password };
+    const result = await authService.login(credentials);
     setLoading(false);
 
-    if (result.ok) {
+    if (result.ok && result.data?.user) {
       showModal('Login Berhasil!', `Selamat datang kembali, ${result.data.user.name}!`, 'success');
       // Navigate to tabs after modal is closed
       setTimeout(() => {
@@ -58,7 +60,7 @@ export default function LoginScreen() {
         router.replace('/(tabs)');
       }, 1500);
     } else {
-      showModal('Login Gagal!', 'Email atau password salah. Silakan coba lagi atau daftar akun baru.', 'error');
+      showModal('Login Gagal!', result.error || 'Email atau password salah. Silakan coba lagi atau daftar akun baru.', 'error');
     }
   };
 

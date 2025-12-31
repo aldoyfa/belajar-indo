@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 // ✅ FIXED: Import dari root menggunakan ../../
-import Card from '../../components/Card.';
+import { Card } from '../../components/Card.';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
 export default function HomeScreen() {
@@ -89,8 +89,8 @@ export default function HomeScreen() {
             onPress={() => router.push('/(tabs)/vocabulary')}
             activeOpacity={0.7}
           >
-            <Card gradient colors={['#667eea', '#764ba2']}>
-              <View style={styles.featureCard}>
+            <Card gradient colors={['#667eea', '#764ba2']} style={styles.featureCard}>
+              <View style={styles.featureCardContent}>
                 <Text style={styles.featureIcon}>📚</Text>
                 <View style={styles.featureContent}>
                   <Text style={styles.featureTitle}>Vocabulary</Text>
@@ -106,8 +106,8 @@ export default function HomeScreen() {
             onPress={() => router.push('/(tabs)/quiz')}
             activeOpacity={0.7}
           >
-            <Card gradient colors={['#f093fb', '#f5576c']}>
-              <View style={styles.featureCard}>
+            <Card gradient colors={['#f093fb', '#f5576c']} style={styles.featureCard}>
+              <View style={styles.featureCardContent}>
                 <Text style={styles.featureIcon}>📝</Text>
                 <View style={styles.featureContent}>
                   <Text style={styles.featureTitle}>Quiz</Text>
@@ -123,8 +123,8 @@ export default function HomeScreen() {
             onPress={() => router.push('/(tabs)/profile')}
             activeOpacity={0.7}
           >
-            <Card gradient colors={['#4facfe', '#00f2fe']}>
-              <View style={styles.featureCard}>
+            <Card gradient colors={['#4facfe', '#00f2fe']} style={styles.featureCard}>
+              <View style={styles.featureCardContent}>
                 <Text style={styles.featureIcon}>📊</Text>
                 <View style={styles.featureContent}>
                   <Text style={styles.featureTitle}>Progress</Text>
@@ -140,7 +140,7 @@ export default function HomeScreen() {
         {/* About Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>About Us</Text>
-          <Card>
+          <Card style={styles.aboutCard}>
             <Text style={styles.aboutText}>
               BelajarIndo adalah platform pembelajaran bahasa Indonesia yang 
               dirancang untuk membantu Anda menguasai bahasa dengan cara yang 
@@ -234,6 +234,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   featureCard: {
+    marginBottom: 12,
+  },
+  featureCardContent: {
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -254,6 +257,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.9)',
     lineHeight: 20,
+  },
+  aboutCard: {
+    padding: 16,
   },
   aboutText: {
     fontSize: 16,

@@ -1,13 +1,18 @@
 import React from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, ActivityIndicatorProps } from 'react-native';
 
-const LoadingSpinner = ({ size = 'large', color = '#667eea' }) => {
+interface LoadingSpinnerProps {
+  size?: 'small' | 'large';
+  color?: string;
+}
+
+function LoadingSpinner({ size = 'large', color = '#667eea' }: LoadingSpinnerProps): JSX.Element {
   return (
     <View style={styles.container}>
       <ActivityIndicator size={size} color={color} />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

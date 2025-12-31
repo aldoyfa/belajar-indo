@@ -9,11 +9,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Card from '../components/Card.';
-import CustomModal from '../components/CustomModal';
-import GradientButton from '../components/GradientButton';
-import LoadingSpinner from '../components/LoadingSpinner';
-import { quizService } from '../services/api';
+import { Card } from '../../components/Card.';
+import { CustomModal } from '../../components/CustomModal';
+import { GradientButton } from '../../components/GradientButton';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import { quizService } from '../../services/api';
 
 // Sample quiz data
 const QUIZ_DATA = [
@@ -57,7 +57,7 @@ export default function QuizScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [modalMessage, setModalMessage] = useState('');
-  const [modalType, setModalType] = useState('success');
+  const [modalType, setModalType] = useState<'success' | 'error' | 'warning'>('success');
 
   useEffect(() => {
     loadProgress();
@@ -218,12 +218,12 @@ export default function QuizScreen() {
                 activeOpacity={0.7}
               >
                 <Card
-                  style={[
+                  style={StyleSheet.flatten([
                     styles.optionCard,
                     isSelected && styles.selectedOption,
                     showCorrect && styles.correctOption,
                     showWrong && styles.wrongOption,
-                  ]}
+                  ])}
                 >
                   <View style={styles.optionContent}>
                     <View style={styles.optionNumber}>

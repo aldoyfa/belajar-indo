@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-interface CustomModalProps {
+export interface CustomModalProps {
   visible: boolean;
   onClose: () => void;
   title: string;
@@ -9,13 +9,13 @@ interface CustomModalProps {
   type?: 'success' | 'error' | 'warning';
 }
 
-const CustomModal: React.FC<CustomModalProps> = ({ 
+export function CustomModal({ 
   visible, 
   onClose, 
   title, 
   message, 
   type = 'success' 
-}) => {
+}: CustomModalProps): JSX.Element {
   const getIconAndColor = () => {
     switch (type) {
       case 'error':
@@ -53,7 +53,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
       </View>
     </Modal>
   );
-};
+}
 
 const styles = StyleSheet.create({
   overlay: {

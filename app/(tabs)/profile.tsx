@@ -12,9 +12,9 @@ import {
   View,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import Card from '../components/Card.';
-import LoadingSpinner from '../components/LoadingSpinner';
-import { authService, quizService } from '../services/api';
+import { Card } from '../../components/Card.';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import { authService, quizService } from '../../services/api';
 
 const screenWidth = Dimensions.get('window').width;
 

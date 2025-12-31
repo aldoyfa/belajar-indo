@@ -12,9 +12,10 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 // FIX: Import dari root, naik 2 level
-import { authService } from '../../services/api';
-import CustomModal from '../../components/CustomModal';
-import GradientButton from '../../components/GradientButton';
+import { authService } from '../../services/auth';
+import { CustomModal } from '../../components/CustomModal';
+import { GradientButton } from '../../components/GradientButton';
+import type { RegisterCredentials } from '../../types';
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');
@@ -53,10 +54,11 @@ export default function RegisterScreen() {
     }
 
     setLoading(true);
-    const result = await authService.register(name, email.trim(), password);
+    const credentials: RegisterCredentials = { name, email: email.trim(), password };
+    const result = await authService.register(credentials);
     setLoading(false);
 
-    if (result.ok) {
+    if (result.ok && result.data?.user) {
       showModal('Akun Berhasil Dibuat!', `Selamat bergabung, ${name}! Silakan login untuk melanjutkan.`, 'success');
       // Navigate to login after success
       setTimeout(() => {

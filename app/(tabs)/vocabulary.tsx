@@ -8,8 +8,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import GradientButton from '../components/GradientButton';
-import { vocabService } from '../services/api';
+import { GradientButton } from '../../components/GradientButton';
+import { vocabService } from '../../services/api';
 
 // Sample vocabulary data (flashcards)
 const VOCAB_DATA = [
