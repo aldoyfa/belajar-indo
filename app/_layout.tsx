@@ -1,15 +1,53 @@
-import { Stack } from 'expo-router';
-import { useEffect } from 'react';
+// app/_layout.tsx - IMPROVED VERSION
+import { Stack, useRouter, useSegments } from 'expo-router';
+import { useEffect, useState } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
+import { authService } from '../services/auth';
 
-// Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [isReady, setIsReady] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const segments = useSegments();
+  const router = useRouter();
+
+  // Check auth status on mount dan setup listener
   useEffect(() => {
-    // Hide splash screen after app loads
-    SplashScreen.hideAsync();
+    checkAuth();
   }, []);
+
+  // Protected route logic
+  useEffect(() => {
+    if (!isReady) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+    
+    if (!isAuthenticated && !inAuthGroup) {
+      // User not logged in, redirect to login
+      router.replace('/(auth)/login');
+    } else if (isAuthenticated && inAuthGroup) {
+      // User logged in but still in auth screens, redirect to tabs
+      router.replace('/(tabs)');
+    }
+  }, [isAuthenticated, segments, isReady]);
+
+  const checkAuth = async () => {
+    try {
+      const authenticated = await authService.isAuthenticated();
+      setIsAuthenticated(authenticated);
+    } catch (error) {
+      console.error('Auth check error:', error);
+      setIsAuthenticated(false);
+    } finally {
+      setIsReady(true);
+      SplashScreen.hideAsync();
+    }
+  };
+
+  if (!isReady) {
+    return null;
+  }
 
   return (
     <Stack 
@@ -18,13 +56,7 @@ export default function RootLayout() {
         contentStyle: { backgroundColor: '#f4f6fb' }
       }}
     >
-      {/* Entry point - auth check */}
-      <Stack.Screen name="index" />
-      
-      {/* Auth screens group */}
       <Stack.Screen name="(auth)" />
-      
-      {/* Main app screens (tabs) */}
       <Stack.Screen name="(tabs)" />
     </Stack>
   );
