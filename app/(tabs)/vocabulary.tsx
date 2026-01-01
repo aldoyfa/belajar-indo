@@ -1,31 +1,25 @@
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
-  Animated,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Animated,
+    FlatList,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
-import { GradientButton } from '../../components/GradientButton';
 import { vocabService } from '../../services/api';
+import { VOCAB_CATEGORIES, getAllVocabItems, searchVocab } from './vocabulary-data';
 
-// Sample vocabulary data (flashcards)
-const VOCAB_DATA = [
-  { indonesian: 'Selamat pagi', english: 'Good morning', category: 'Greetings' },
-  { indonesian: 'Terima kasih', english: 'Thank you', category: 'Courtesy' },
-  { indonesian: 'Apa kabar?', english: 'How are you?', category: 'Greetings' },
-  { indonesian: 'Saya cinta kamu', english: 'I love you', category: 'Expressions' },
-  { indonesian: 'Sampai jumpa', english: 'Goodbye', category: 'Greetings' },
-  { indonesian: 'Tolong', english: 'Please', category: 'Courtesy' },
-  { indonesian: 'Maaf', english: 'Sorry', category: 'Courtesy' },
-  { indonesian: 'Permisi', english: 'Excuse me', category: 'Courtesy' },
-  { indonesian: 'Baik', english: 'Good', category: 'Basic' },
-  { indonesian: 'Buruk', english: 'Bad', category: 'Basic' },
-];
+type CategoryKey = keyof typeof VOCAB_CATEGORIES;
 
 export default function VocabularyScreen() {
+  const [selectedCategory, setSelectedCategory] = useState<CategoryKey | null>(null);
+  const [searchMode, setSearchMode] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [flipAnimation] = useState(new Animated.Value(0));
@@ -40,9 +34,7 @@ export default function VocabularyScreen() {
       const progressResponse = await vocabService.getProgress();
       if (progressResponse.ok && progressResponse.data.progress) {
         const progress = progressResponse.data.progress;
-        if (progress.currentQuestion) {
-          setCurrentIndex(Math.min(progress.currentQuestion, VOCAB_DATA.length - 1));
-        }
+        setLearnedCount(progress.currentQuestion || 0);
       }
     } catch (error) {
       console.error('Error loading progress:', error);
@@ -51,11 +43,12 @@ export default function VocabularyScreen() {
 
   const saveProgress = async () => {
     try {
-      const progress = Math.round(((currentIndex + 1) / VOCAB_DATA.length) * 100);
+      const allItems = getAllVocabItems();
+      const progress = Math.round(((learnedCount + 1) / allItems.length) * 100);
       await vocabService.saveProgress({
         quizCategory: 'vocab',
         progress,
-        currentQuestion: currentIndex + 1,
+        currentQuestion: learnedCount + 1,
       });
     } catch (error) {
       console.error('Error saving progress:', error);
@@ -72,11 +65,14 @@ export default function VocabularyScreen() {
   };
 
   const handleNext = async () => {
-    if (currentIndex < VOCAB_DATA.length - 1) {
+    const currentItems = selectedCategory 
+      ? VOCAB_CATEGORIES[selectedCategory].items 
+      : getAllVocabItems();
+    
+    if (currentIndex < currentItems.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setIsFlipped(false);
       flipAnimation.setValue(0);
-      await saveProgress();
     }
   };
 
@@ -88,13 +84,138 @@ export default function VocabularyScreen() {
     }
   };
 
-  const handleMarkLearned = () => {
+  const handleMarkLearned = async () => {
     setLearnedCount(learnedCount + 1);
+    await saveProgress();
     handleNext();
   };
 
-  const currentCard = VOCAB_DATA[currentIndex];
-  const progress = ((currentIndex + 1) / VOCAB_DATA.length) * 100;
+  const handleCategorySelect = (category: CategoryKey) => {
+    setSelectedCategory(category);
+    setCurrentIndex(0);
+    setIsFlipped(false);
+    flipAnimation.setValue(0);
+    setSearchMode(false);
+    setSearchQuery('');
+  };
+
+  const handleBackToCategories = () => {
+    setSelectedCategory(null);
+    setCurrentIndex(0);
+    setIsFlipped(false);
+    flipAnimation.setValue(0);
+    setSearchMode(false);
+    setSearchQuery('');
+  };
+
+  const handleSearch = () => {
+    setSearchMode(!searchMode);
+    if (!searchMode) {
+      setSearchQuery('');
+    }
+  };
+
+  // Render Category Selection
+  if (!selectedCategory && !searchMode) {
+    return (
+      <View style={styles.container}>
+        <LinearGradient colors={['#667eea', '#764ba2']} style={styles.header}>
+          <Text style={styles.headerTitle}>Vocabulary Categories</Text>
+          <Text style={styles.headerSubtitle}>45 words across 3 categories</Text>
+          <Text style={styles.learnedText}>Learned: {learnedCount} cards</Text>
+        </LinearGradient>
+
+        <ScrollView style={styles.categoriesContainer}>
+          <TouchableOpacity 
+            style={styles.searchButton}
+            onPress={handleSearch}
+          >
+            <Ionicons name="search" size={20} color="#667eea" />
+            <Text style={styles.searchButtonText}>Search Vocabulary</Text>
+          </TouchableOpacity>
+
+          {Object.entries(VOCAB_CATEGORIES).map(([key, category]) => (
+            <TouchableOpacity
+              key={key}
+              activeOpacity={0.8}
+              onPress={() => handleCategorySelect(key as CategoryKey)}
+            >
+              <LinearGradient
+                colors={category.color}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.categoryCard}
+              >
+                <View style={styles.categoryContent}>
+                  <Text style={styles.categoryTitle}>{category.title}</Text>
+                  <Text style={styles.categoryCount}>{category.items.length} words</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={24} color="#fff" />
+              </LinearGradient>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  // Render Search Mode
+  if (searchMode) {
+    const searchResults = searchQuery.length > 0 ? searchVocab(searchQuery) : getAllVocabItems();
+
+    return (
+      <View style={styles.container}>
+        <LinearGradient colors={['#667eea', '#764ba2']} style={styles.header}>
+          <View style={styles.headerWithBack}>
+            <TouchableOpacity onPress={handleBackToCategories}>
+              <Ionicons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Search Vocabulary</Text>
+          </View>
+        </LinearGradient>
+
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search by word, meaning, or example..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            autoFocus
+          />
+        </View>
+
+        <FlatList
+          data={searchResults}
+          keyExtractor={(item, index) => `${item.word}-${index}`}
+          renderItem={({ item }) => (
+            <View style={styles.searchResultCard}>
+              <View style={styles.searchResultContent}>
+                <Text style={styles.searchResultWord}>{item.word}</Text>
+                <Text style={styles.searchResultMeaning}>{item.meaning}</Text>
+                <Text style={styles.searchResultExample}>{item.example}</Text>
+              </View>
+              <View style={[styles.categoryBadgeSmall, { backgroundColor: '#667eea' }]}>
+                <Text style={styles.categoryBadgeText}>{item.category}</Text>
+              </View>
+            </View>
+          )}
+          ListEmptyComponent={
+            <View style={styles.emptyState}>
+              <Ionicons name="search-outline" size={64} color="#ccc" />
+              <Text style={styles.emptyStateText}>No results found</Text>
+            </View>
+          }
+        />
+      </View>
+    );
+  }
+
+  // Render Flashcard Mode
+  const currentItems = selectedCategory ? VOCAB_CATEGORIES[selectedCategory].items : [];
+  const currentCard = currentItems[currentIndex];
+  const progress = ((currentIndex + 1) / currentItems.length) * 100;
+  const categoryColors = selectedCategory ? VOCAB_CATEGORIES[selectedCategory].color : ['#667eea', '#764ba2'];
 
   const frontInterpolate = flipAnimation.interpolate({
     inputRange: [0, 1],
@@ -109,20 +230,28 @@ export default function VocabularyScreen() {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <LinearGradient colors={['#667eea', '#764ba2']} style={styles.header}>
-        <Text style={styles.headerTitle}>Vocabulary</Text>
-        <Text style={styles.headerSubtitle}>
-          Card {currentIndex + 1} of {VOCAB_DATA.length}
-        </Text>
+      <LinearGradient colors={categoryColors} style={styles.header}>
+        <View style={styles.headerWithBack}>
+          <TouchableOpacity onPress={handleBackToCategories}>
+            <Ionicons name="arrow-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          <View style={styles.headerTitleContainer}>
+            <Text style={styles.headerTitle}>
+              {selectedCategory && VOCAB_CATEGORIES[selectedCategory].title}
+            </Text>
+            <Text style={styles.headerSubtitle}>
+              Card {currentIndex + 1} of {currentItems.length}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={handleSearch}>
+            <Ionicons name="search" size={24} color="#fff" />
+          </TouchableOpacity>
+        </View>
         
         {/* Progress Bar */}
         <View style={styles.progressBarContainer}>
           <View style={[styles.progressBar, { width: `${progress}%` }]} />
         </View>
-
-        <Text style={styles.learnedText}>
-          Learned: {learnedCount} cards
-        </Text>
       </LinearGradient>
 
       {/* Flashcard */}
@@ -132,6 +261,7 @@ export default function VocabularyScreen() {
           onPress={handleFlip}
           style={styles.flashcardTouchable}
         >
+          {/* Front Side */}
           <Animated.View
             style={[
               styles.flashcard,
@@ -140,15 +270,16 @@ export default function VocabularyScreen() {
             ]}
           >
             <LinearGradient
-              colors={['#667eea', '#764ba2']}
+              colors={categoryColors}
               style={styles.flashcardGradient}
             >
-              <Text style={styles.categoryBadge}>{currentCard.category}</Text>
-              <Text style={styles.flashcardText}>{currentCard.indonesian}</Text>
+              <Text style={styles.categoryLabel}>{currentCard.category}</Text>
+              <Text style={styles.flashcardText}>{currentCard.word}</Text>
               <Text style={styles.tapHint}>Tap to flip</Text>
             </LinearGradient>
           </Animated.View>
 
+          {/* Back Side */}
           <Animated.View
             style={[
               styles.flashcard,
@@ -157,55 +288,70 @@ export default function VocabularyScreen() {
               !isFlipped && styles.flashcardHidden,
             ]}
           >
-            <LinearGradient
-              colors={['#4facfe', '#00f2fe']}
-              style={styles.flashcardGradient}
-            >
-              <Text style={styles.categoryBadge}>{currentCard.category}</Text>
-              <Text style={styles.flashcardText}>{currentCard.english}</Text>
-              <Text style={styles.tapHint}>Tap to flip back</Text>
-            </LinearGradient>
+            <View style={styles.flashcardBackContent}>
+              <Text style={styles.flashcardBackLabel}>Translation</Text>
+              <Text style={styles.flashcardBackText}>{currentCard.meaning}</Text>
+              <View style={styles.exampleContainer}>
+                <Text style={styles.exampleLabel}>Example:</Text>
+                <Text style={styles.exampleText}>{currentCard.example}</Text>
+              </View>
+            </View>
           </Animated.View>
         </TouchableOpacity>
       </View>
 
-      {/* Navigation Buttons */}
-      <View style={styles.navigationContainer}>
+      {/* Navigation Controls */}
+      <View style={styles.controls}>
         <TouchableOpacity
           style={[styles.navButton, currentIndex === 0 && styles.navButtonDisabled]}
           onPress={handlePrevious}
           disabled={currentIndex === 0}
         >
-          <Text style={styles.navButtonText}>← Previous</Text>
+          <Ionicons name="chevron-back" size={24} color={currentIndex === 0 ? '#ccc' : '#667eea'} />
+          <Text style={[styles.navButtonText, currentIndex === 0 && styles.navButtonTextDisabled]}>
+            Previous
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.learnedButton}
           onPress={handleMarkLearned}
         >
-          <Text style={styles.learnedButtonText}>✓ Learned</Text>
+          <LinearGradient
+            colors={['#10b981', '#059669']}
+            style={styles.learnedButtonGradient}
+          >
+            <Ionicons name="checkmark-circle" size={20} color="#fff" />
+            <Text style={styles.learnedButtonText}>Mark Learned</Text>
+          </LinearGradient>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[
             styles.navButton,
-            currentIndex === VOCAB_DATA.length - 1 && styles.navButtonDisabled,
+            currentIndex === currentItems.length - 1 && styles.navButtonDisabled,
           ]}
           onPress={handleNext}
-          disabled={currentIndex === VOCAB_DATA.length - 1}
+          disabled={currentIndex === currentItems.length - 1}
         >
-          <Text style={styles.navButtonText}>Next →</Text>
+          <Text
+            style={[
+              styles.navButtonText,
+              currentIndex === currentItems.length - 1 && styles.navButtonTextDisabled,
+            ]}
+          >
+            Next
+          </Text>
+          <Ionicons
+            name="chevron-forward"
+            size={24}
+            color={currentIndex === currentItems.length - 1 ? '#ccc' : '#667eea'}
+          />
         </TouchableOpacity>
       </View>
 
-      {/* Action Buttons */}
-      <View style={styles.buttonContainer}>
-        <GradientButton
-          title="Take Quiz"
-          onPress={() => router.push('/(tabs)/quiz')}
-          colors={['#f093fb', '#f5576c']}
-          style={styles.button}
-        />
+      <View style={styles.stats}>
+        <Text style={styles.statsText}>Total Learned: {learnedCount} / {getAllVocabItems().length}</Text>
       </View>
     </View>
   );
@@ -221,34 +367,172 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingHorizontal: 20,
   },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 5,
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.9)',
-    marginBottom: 15,
-  },
-  progressBarContainer: {
-    height: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    borderRadius: 4,
-    overflow: 'hidden',
+  headerWithBack: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 10,
   },
-  progressBar: {
-    height: '100%',
-    backgroundColor: 'white',
-    borderRadius: 4,
+  headerTitleContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    marginTop: 4,
   },
   learnedText: {
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.9)',
     textAlign: 'center',
+    marginTop: 8,
   },
+  progressBarContainer: {
+    height: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 2,
+    marginTop: 12,
+    overflow: 'hidden',
+  },
+  progressBar: {
+    height: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 2,
+  },
+  
+  // Categories
+  categoriesContainer: {
+    flex: 1,
+    padding: 20,
+  },
+  searchButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  searchButtonText: {
+    marginLeft: 12,
+    fontSize: 16,
+    color: '#667eea',
+    fontWeight: '600',
+  },
+  categoryCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  categoryContent: {
+    flex: 1,
+  },
+  categoryTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  categoryCount: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+  },
+
+  // Search
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    margin: 20,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    height: 48,
+    fontSize: 16,
+  },
+  searchResultCard: {
+    backgroundColor: '#fff',
+    marginHorizontal: 20,
+    marginBottom: 12,
+    padding: 16,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  searchResultContent: {
+    marginBottom: 8,
+  },
+  searchResultWord: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1f2937',
+    marginBottom: 4,
+  },
+  searchResultMeaning: {
+    fontSize: 16,
+    color: '#667eea',
+    marginBottom: 8,
+  },
+  searchResultExample: {
+    fontSize: 14,
+    color: '#6b7280',
+    fontStyle: 'italic',
+  },
+  categoryBadgeSmall: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  categoryBadgeText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 60,
+  },
+  emptyStateText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#999',
+  },
+
+  // Flashcard
   cardContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -257,22 +541,13 @@ const styles = StyleSheet.create({
   },
   flashcardTouchable: {
     width: '100%',
-    height: 300,
+    height: 400,
   },
   flashcard: {
-    position: 'absolute',
     width: '100%',
     height: '100%',
-    backfaceVisibility: 'hidden',
     borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  flashcardBack: {
+    backfaceVisibility: 'hidden',
     position: 'absolute',
   },
   flashcardHidden: {
@@ -280,86 +555,128 @@ const styles = StyleSheet.create({
   },
   flashcardGradient: {
     flex: 1,
+    borderRadius: 20,
+    padding: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  categoryBadge: {
+  categoryLabel: {
     position: 'absolute',
     top: 20,
-    right: 20,
+    left: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
     fontSize: 12,
-    color: 'white',
     fontWeight: '600',
+    color: '#fff',
   },
   flashcardText: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: 'bold',
-    color: 'white',
+    color: '#fff',
     textAlign: 'center',
-    marginBottom: 20,
   },
   tapHint: {
+    position: 'absolute',
+    bottom: 20,
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.7)',
-    textAlign: 'center',
+    color: 'rgba(255, 255, 255, 0.8)',
   },
-  navigationContainer: {
+  flashcardBack: {
+    backgroundColor: '#fff',
+  },
+  flashcardBackContent: {
+    flex: 1,
+    padding: 30,
+    justifyContent: 'center',
+  },
+  flashcardBackLabel: {
+    fontSize: 14,
+    color: '#999',
+    marginBottom: 8,
+    textTransform: 'uppercase',
+    fontWeight: '600',
+  },
+  flashcardBackText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#667eea',
+    marginBottom: 24,
+  },
+  exampleContainer: {
+    backgroundColor: '#f4f6fb',
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 16,
+  },
+  exampleLabel: {
+    fontSize: 12,
+    color: '#999',
+    marginBottom: 8,
+    fontWeight: '600',
+  },
+  exampleText: {
+    fontSize: 16,
+    color: '#4b5563',
+    lineHeight: 24,
+    fontStyle: 'italic',
+  },
+
+  // Controls
+  controls: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 20,
-    marginBottom: 20,
+    paddingVertical: 20,
   },
   navButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    backgroundColor: 'white',
-    borderRadius: 25,
-    marginHorizontal: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
   },
   navButtonDisabled: {
-    backgroundColor: '#e5e7eb',
+    opacity: 0.3,
   },
   navButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
     color: '#667eea',
-    fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'center',
+  },
+  navButtonTextDisabled: {
+    color: '#ccc',
   },
   learnedButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    backgroundColor: '#10b981',
     borderRadius: 25,
-    marginHorizontal: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    overflow: 'hidden',
+  },
+  learnedButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    gap: 8,
   },
   learnedButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
-  buttonContainer: {
+  stats: {
     paddingHorizontal: 20,
     paddingBottom: 20,
+    alignItems: 'center',
   },
-  button: {
-    marginBottom: 15,
+  statsText: {
+    fontSize: 14,
+    color: '#6b7280',
+    fontWeight: '500',
   },
 });

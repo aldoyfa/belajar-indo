@@ -2,12 +2,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { Card } from '../../components/Card.';
 import { CustomModal } from '../../components/CustomModal';
@@ -182,10 +182,20 @@ export default function QuizScreen() {
     <View style={styles.container}>
       {/* Header */}
       <LinearGradient colors={['#f093fb', '#f5576c']} style={styles.header}>
-        <Text style={styles.headerTitle}>Quiz - Vocabulary</Text>
-        <Text style={styles.headerSubtitle}>
-          Question {currentQuestion + 1} of {QUIZ_DATA.length}
-        </Text>
+        <View style={styles.headerWithButton}>
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.headerTitle}>Quiz - Vocabulary</Text>
+            <Text style={styles.headerSubtitle}>
+              Question {currentQuestion + 1} of {QUIZ_DATA.length}
+            </Text>
+          </View>
+          <TouchableOpacity 
+            style={styles.historyButton}
+            onPress={() => router.push('/(tabs)/quiz-history')}
+          >
+            <Text style={styles.historyButtonIcon}>📊</Text>
+          </TouchableOpacity>
+        </View>
         
         {/* Progress Bar */}
         <View style={styles.progressBarContainer}>
@@ -290,6 +300,15 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingHorizontal: 20,
   },
+  headerWithButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 15,
+  },
+  headerTextContainer: {
+    flex: 1,
+  },
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -299,7 +318,16 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.9)',
-    marginBottom: 15,
+  },
+  historyButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginLeft: 12,
+  },
+  historyButtonIcon: {
+    fontSize: 20,
   },
   progressBarContainer: {
     height: 8,

@@ -1,168 +1,177 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
+    Dimensions,
+    Platform,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
 } from 'react-native';
 
-// ✅ FIXED: Import dari root menggunakan ../../
-import { Card } from '../../components/Card.';
-import LoadingSpinner from '../../components/LoadingSpinner';
+const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadUserData();
-  }, []);
-
-  const loadUserData = async () => {
-    try {
-      const userData = await AsyncStorage.getItem('user');
-      if (userData) {
-        setUser(JSON.parse(userData));
-      }
-    } catch (error) {
-      console.error('Error loading user data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem('token');
-      await AsyncStorage.removeItem('user');
-      router.replace('/(auth)/login');
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
-  };
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
   return (
-    <ScrollView style={styles.container}>
-      {/* Header with gradient */}
-      <LinearGradient
-        colors={['#667eea', '#764ba2']}
-        style={styles.header}
-      >
-        <View style={styles.headerContent}>
-          <View>
-            <Text style={styles.greeting}>Selamat Datang!</Text>
-            <Text style={styles.userName}>{user?.name || 'User'}</Text>
-          </View>
-          <TouchableOpacity onPress={() => router.push('/(tabs)/profile')}>
-            <View style={styles.avatarPlaceholder}>
-              <Text style={styles.avatarText}>
-                {user?.name?.charAt(0).toUpperCase() || 'U'}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
-
-      {/* Main Content */}
-      <View style={styles.content}>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
+      
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Hero Section */}
-        <Card style={styles.heroCard}>
-          <Text style={styles.heroTitle}>Indonesian Virtual Lab</Text>
-          <Text style={styles.heroSubtitle}>
-            Pelajari bahasa Indonesia dengan mudah dan menyenangkan
+        <View style={styles.hero}>
+          <Text style={styles.heroTitle}>
+            Welcome to Indonesian Virtual Lab
           </Text>
-        </Card>
-
-        {/* Features Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Features</Text>
-          
-          <TouchableOpacity
-            onPress={() => router.push('/(tabs)/vocabulary')}
-            activeOpacity={0.7}
+          <Text style={styles.heroSubtitle}>
+            Your comprehensive virtual laboratory for mastering Indonesian language through interactive experiments and simulations.
+          </Text>
+          <TouchableOpacity 
+            style={styles.heroButton}
+            activeOpacity={0.8}
           >
-            <Card gradient colors={['#667eea', '#764ba2']} style={styles.featureCard}>
-              <View style={styles.featureCardContent}>
-                <Text style={styles.featureIcon}>📚</Text>
-                <View style={styles.featureContent}>
-                  <Text style={styles.featureTitle}>Vocabulary</Text>
-                  <Text style={styles.featureDescription}>
-                    Pelajari kosakata bahasa Indonesia dengan flashcard interaktif
-                  </Text>
-                </View>
-              </View>
-            </Card>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => router.push('/(tabs)/quiz')}
-            activeOpacity={0.7}
-          >
-            <Card gradient colors={['#f093fb', '#f5576c']} style={styles.featureCard}>
-              <View style={styles.featureCardContent}>
-                <Text style={styles.featureIcon}>📝</Text>
-                <View style={styles.featureContent}>
-                  <Text style={styles.featureTitle}>Quiz</Text>
-                  <Text style={styles.featureDescription}>
-                    Uji pemahaman Anda dengan berbagai kuis menarik
-                  </Text>
-                </View>
-              </View>
-            </Card>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => router.push('/(tabs)/profile')}
-            activeOpacity={0.7}
-          >
-            <Card gradient colors={['#4facfe', '#00f2fe']} style={styles.featureCard}>
-              <View style={styles.featureCardContent}>
-                <Text style={styles.featureIcon}>📊</Text>
-                <View style={styles.featureContent}>
-                  <Text style={styles.featureTitle}>Progress</Text>
-                  <Text style={styles.featureDescription}>
-                    Lihat statistik dan riwayat pembelajaran Anda
-                  </Text>
-                </View>
-              </View>
-            </Card>
+            <LinearGradient
+              colors={['#ff8c8c', '#ffb6b9']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.heroButtonGradient}
+            >
+              <Text style={styles.heroButtonText}>About Us</Text>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
 
         {/* About Section */}
-        <View style={styles.section}>
+        <View style={styles.aboutSection}>
           <Text style={styles.sectionTitle}>About Us</Text>
-          <Card style={styles.aboutCard}>
+          <View style={styles.aboutCard}>
             <Text style={styles.aboutText}>
-              BelajarIndo adalah platform pembelajaran bahasa Indonesia yang 
-              dirancang untuk membantu Anda menguasai bahasa dengan cara yang 
-              interaktif dan menyenangkan.
+              Belajar Indo is here as a comprehensive solution for students, university learners, and the international community who want to master the Indonesian language. With an intuitive interface, interactive features, and well-structured learning materials, we aim to make your Indonesian learning journey enjoyable and accessible anytime, anywhere.
             </Text>
-          </Card>
+          </View>
         </View>
 
-        {/* Logout Button */}
-        <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={handleLogout}
-        >
-          <LinearGradient
-            colors={['#ff8c8c', '#ffb6b9']}
-            style={styles.logoutGradient}
+        {/* Features Section */}
+        <View style={styles.featuresSection}>
+          <Text style={styles.sectionTitle}>Virtual Lab Modules</Text>
+          <Text style={styles.featuresSubtitle}>
+            Interactive laboratory for Indonesian language experimentation and analysis
+          </Text>
+
+          {/* Vocabulary Feature */}
+          <TouchableOpacity 
+            activeOpacity={0.9}
+            onPress={() => router.push('/(tabs)/vocabulary')}
           >
-            <Text style={styles.logoutText}>Logout</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+            <LinearGradient
+              colors={['#667eea', '#764ba2']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.featureCard}
+            >
+              <View style={styles.featureContent}>
+                <Text style={styles.featureIcon}>📚</Text>
+                <View style={styles.featureTextContainer}>
+                  <Text style={styles.featureTitle}>Vocabulary</Text>
+                  <Text style={styles.featureDescription}>
+                    Master thousands of Indonesian words with ease! Our interactive Vocabulary section features audio pronunciation, visual flashcards, and engaging exercises to make learning effective and enjoyable.
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.featureButtons}>
+                <View style={styles.tryButton}>
+                  <Text style={styles.tryButtonText}>Try Now</Text>
+                </View>
+                <View style={styles.learnButton}>
+                  <Text style={styles.learnButtonText}>Learn More</Text>
+                </View>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
+
+          {/* Quiz Feature */}
+          <TouchableOpacity 
+            activeOpacity={0.9}
+            onPress={() => router.push('/(tabs)/quiz')}
+          >
+            <LinearGradient
+              colors={['#f093fb', '#f5576c']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.featureCard}
+            >
+              <View style={styles.featureContent}>
+                <Text style={styles.featureIcon}>📝</Text>
+                <View style={styles.featureTextContainer}>
+                  <Text style={styles.featureTitle}>Interactive Quiz</Text>
+                  <Text style={styles.featureDescription}>
+                    Test and improve your Indonesian language skills with our fun, interactive quizzes! Challenge yourself with various difficulty levels and track your progress.
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.featureButtons}>
+                <View style={styles.tryButton}>
+                  <Text style={styles.tryButtonText}>Try Now</Text>
+                </View>
+                <View style={styles.historyButton}>
+                  <Text style={styles.historyButtonText}>View History</Text>
+                </View>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+
+        {/* Footer */}
+        <View style={styles.footer}>
+          <View style={styles.footerContent}>
+            <View style={styles.footerSection}>
+              <View style={styles.footerLogo}>
+                <View style={styles.footerLogoCircle}>
+                  <Text style={styles.footerLogoText}>BI</Text>
+                </View>
+                <Text style={styles.footerLogoTitle}>Learn Indonesian</Text>
+              </View>
+              <Text style={styles.footerDescription}>
+                Your comprehensive platform for mastering Indonesian language. Interactive lessons, vocabulary building, and cultural insights.
+              </Text>
+            </View>
+
+            <View style={styles.footerLinks}>
+              <Text style={styles.footerLinksTitle}>Navigation</Text>
+              <TouchableOpacity onPress={() => router.push('/(tabs)/')}>
+                <Text style={styles.footerLink}>Home</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push('/(tabs)/vocabulary')}>
+                <Text style={styles.footerLink}>Features</Text>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Text style={styles.footerLink}>About Us</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.footerContact}>
+              <Text style={styles.footerContactTitle}>Contact Us</Text>
+              <Text style={styles.footerContactText}>
+                📧 support@learnindonesian.com
+              </Text>
+              <Text style={styles.footerContactText}>
+                📱 +62 (021) 1962 2391 118
+              </Text>
+              <Text style={styles.footerContactText}>
+                📍 Jakarta, Indonesia
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.copyright}>
+            <Text style={styles.copyrightText}>
+              © Copyright by Belajar Indo 2025, All Rights Reserved
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -171,114 +180,270 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f4f6fb',
   },
-  header: {
-    paddingTop: 60,
-    paddingBottom: 30,
+  
+  // ScrollView
+  scrollView: {
+    flex: 1,
+  },
+
+  // Hero Section
+  hero: {
     paddingHorizontal: 20,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    paddingVertical: 40,
     alignItems: 'center',
-  },
-  greeting: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.9)',
-    marginBottom: 5,
-  },
-  userName: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  avatarPlaceholder: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'white',
-  },
-  avatarText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  content: {
-    padding: 20,
-  },
-  heroCard: {
-    marginBottom: 30,
-    padding: 24,
   },
   heroTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: Platform.OS === 'web' ? 34 : 28,
+    fontWeight: '700',
     color: '#1f2937',
-    marginBottom: 10,
+    textAlign: 'center',
+    marginBottom: 16,
+    lineHeight: Platform.OS === 'web' ? 42 : 36,
   },
   heroSubtitle: {
     fontSize: 16,
-    color: '#6c7a89',
+    color: '#6b7280',
+    textAlign: 'center',
     lineHeight: 24,
+    marginBottom: 24,
+    maxWidth: 600,
   },
-  section: {
-    marginBottom: 30,
+  heroButton: {
+    borderRadius: 25,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  heroButtonGradient: {
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+  },
+  heroButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+
+  // About Section
+  aboutSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 30,
   },
   sectionTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontSize: 28,
+    fontWeight: '700',
     color: '#1f2937',
-    marginBottom: 15,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  aboutCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  aboutText: {
+    fontSize: 16,
+    color: '#4b5563',
+    lineHeight: 26,
+    textAlign: 'center',
+  },
+
+  // Features Section
+  featuresSection: {
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+  },
+  featuresSubtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+    textAlign: 'center',
+    marginBottom: 24,
   },
   featureCard: {
-    marginBottom: 12,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 5,
   },
-  featureCardContent: {
+  featureContent: {
     flexDirection: 'row',
-    alignItems: 'center',
+    marginBottom: 16,
   },
   featureIcon: {
     fontSize: 40,
-    marginRight: 15,
+    marginRight: 16,
   },
-  featureContent: {
+  featureTextContainer: {
     flex: 1,
   },
   featureTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 5,
+    fontWeight: '700',
+    color: '#fff',
+    marginBottom: 8,
   },
   featureDescription: {
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.9)',
-    lineHeight: 20,
+    lineHeight: 22,
   },
-  aboutCard: {
-    padding: 16,
+  featureButtons: {
+    flexDirection: 'row',
+    gap: 12,
   },
-  aboutText: {
+  tryButton: {
+    backgroundColor: '#FA8072',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    flex: 1,
+  },
+  tryButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  learnButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    flex: 1,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  learnButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  historyButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    flex: 1,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  historyButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+
+  // Footer
+  footer: {
+    backgroundColor: '#dc2626',
+    paddingTop: 40,
+    paddingHorizontal: 20,
+  },
+  footerContent: {
+    ...Platform.select({
+      web: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+      },
+      default: {},
+    }),
+  },
+  footerSection: {
+    marginBottom: 30,
+    ...Platform.select({
+      web: { flex: 1, marginRight: 20 },
+      default: {},
+    }),
+  },
+  footerLogo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  footerLogoCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  footerLogoText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  footerLogoTitle: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  footerDescription: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 14,
+    lineHeight: 22,
+  },
+  footerLinks: {
+    marginBottom: 30,
+    ...Platform.select({
+      web: { flex: 1, marginRight: 20 },
+      default: {},
+    }),
+  },
+  footerLinksTitle: {
+    color: '#fff',
     fontSize: 16,
-    color: '#6c7a89',
-    lineHeight: 24,
+    fontWeight: '700',
+    marginBottom: 12,
   },
-  logoutButton: {
-    borderRadius: 25,
-    overflow: 'hidden',
-    marginTop: 20,
-    marginBottom: 40,
+  footerLink: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 14,
+    marginBottom: 8,
   },
-  logoutGradient: {
-    paddingVertical: 14,
+  footerContact: {
+    marginBottom: 30,
+    ...Platform.select({
+      web: { flex: 1 },
+      default: {},
+    }),
+  },
+  footerContactTitle: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 12,
+  },
+  footerContactText: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  copyright: {
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.2)',
+    paddingVertical: 20,
     alignItems: 'center',
   },
-  logoutText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+  copyrightText: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 12,
+    textAlign: 'center',
   },
 });
