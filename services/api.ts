@@ -3,10 +3,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Backend API URL - sesuaikan dengan URL backend Anda
 const API_URL = 'https://belajar-indo.vercel.app';
 
-interface ApiResponse<T = any> {
+export interface ApiResponse<T = any> {
   ok: boolean;
   data?: T;
   error?: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface AuthSuccess {
+  user: User;
+  token: string;
 }
 
 /**
@@ -18,33 +29,33 @@ const makeRequest = async <T = any>(
 ): Promise<ApiResponse<T>> => {
   try {
     const token = await AsyncStorage.getItem('token');
-    
+
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(options.headers as Record<string, string> || {}),
+      ...((options.headers as Record<string, string>) || {}),
     };
-    
+
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
-    
+
     const response = await fetch(`${API_URL}${endpoint}`, {
       ...options,
       headers,
     });
-    
+
     const data = await response.json();
-    
+
     if (!response.ok) {
       throw new Error(data.error || 'Request failed');
     }
-    
+
     return { ok: true, data };
   } catch (error) {
     console.error('API Request Error:', error);
-    return { 
-      ok: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 };
@@ -54,39 +65,70 @@ const makeRequest = async <T = any>(
  */
 export const authService = {
   // Register user baru
-  register: async (name: string, email: string, password: string): Promise<ApiResponse> => {
-    return makeRequest('/api/auth/register', {
+  register: async (name: string, email: string, password: string): Promise<ApiResponse<AuthSuccess>> => {
+    const result = await makeRequest<AuthSuccess>('/api/auth/register', {
       method: 'POST',
       body: JSON.stringify({ name, email, password }),
     });
-  },
-  
-  // Login user
-  login: async (email: string, password: string): Promise<ApiResponse> => {
-    const result = await makeRequest('/api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
-    
-    if (result.ok && result.data?.token) {
-      // Simpan token dan user data
+
+    if (result.ok && result.data) {
       await AsyncStorage.setItem('token', result.data.token);
       await AsyncStorage.setItem('user', JSON.stringify(result.data.user));
     }
-    
+
     return result;
   },
-  
+
+  // Login user
+  login: async (email: string, password: string): Promise<ApiResponse<AuthSuccess>> => {
+    const result = await makeRequest<AuthSuccess>('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (result.ok && result.data) {
+      await AsyncStorage.setItem('token', result.data.token);
+      await AsyncStorage.setItem('user', JSON.stringify(result.data.user));
+    }
+
+    return result;
+  },
+
   // Logout user
   logout: async (): Promise<void> => {
+    // optional call to backend to invalidate token
     await makeRequest('/api/auth/logout', { method: 'POST' });
     await AsyncStorage.removeItem('token');
     await AsyncStorage.removeItem('user');
   },
-  
-  // Get current user
-  getCurrentUser: async (): Promise<ApiResponse> => {
-    return makeRequest('/api/auth/me', { method: 'GET' });
+
+  // Check apakah user sudah login
+  isAuthenticated: async (): Promise<boolean> => {
+    const token = await AsyncStorage.getItem('token');
+    return !!token;
+  },
+
+  // Ambil user dari storage
+  getCurrentUser: async (): Promise<User | null> => {
+    const storedUser = await AsyncStorage.getItem('user');
+    if (!storedUser) return null;
+    try {
+      return JSON.parse(storedUser) as User;
+    } catch {
+      return null;
+    }
+  },
+
+  // Refresh data user dari server dan simpan ke storage
+  refreshUserData: async (): Promise<User | null> => {
+    const result = await makeRequest<AuthSuccess['user']>('/api/auth/me', { method: 'GET' });
+
+    if (result.ok && result.data) {
+      await AsyncStorage.setItem('user', JSON.stringify(result.data));
+      return result.data;
+    }
+
+    return null;
   },
 };
 

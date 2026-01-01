@@ -1,53 +1,33 @@
-// app/_layout.tsx - IMPROVED VERSION
 import { Stack, useRouter, useSegments } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
-import { authService } from '../services/auth';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
-  const [isReady, setIsReady] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+// 1. Kita pisahkan logika "Satpam" ke komponen internal
+function AuthGuard() {
+  const { isAuthenticated, loading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
 
-  // Check auth status on mount dan setup listener
   useEffect(() => {
-    checkAuth();
-  }, []);
-
-  // Protected route logic
-  useEffect(() => {
-    if (!isReady) return;
+    // Jangan lakukan apa-apa kalau Context masih loading data dari storage
+    if (loading) return;
 
     const inAuthGroup = segments[0] === '(auth)';
-    
+
     if (!isAuthenticated && !inAuthGroup) {
-      // User not logged in, redirect to login
+      // Satpam tendang ke Login
       router.replace('/(auth)/login');
     } else if (isAuthenticated && inAuthGroup) {
-      // User logged in but still in auth screens, redirect to tabs
+      // Satpam antar ke Home
       router.replace('/(tabs)');
     }
-  }, [isAuthenticated, segments, isReady]);
 
-  const checkAuth = async () => {
-    try {
-      const authenticated = await authService.isAuthenticated();
-      setIsAuthenticated(authenticated);
-    } catch (error) {
-      console.error('Auth check error:', error);
-      setIsAuthenticated(false);
-    } finally {
-      setIsReady(true);
-      SplashScreen.hideAsync();
-    }
-  };
-
-  if (!isReady) {
-    return null;
-  }
+    // Hilangkan splash screen kalau semua sudah siap
+    SplashScreen.hideAsync();
+  }, [isAuthenticated, segments, loading]);
 
   return (
     <Stack 
@@ -59,5 +39,14 @@ export default function RootLayout() {
       <Stack.Screen name="(auth)" />
       <Stack.Screen name="(tabs)" />
     </Stack>
+  );
+}
+
+// 2. Default export yang membungkus AuthGuard dengan Provider
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <AuthGuard />
+    </AuthProvider>
   );
 }
