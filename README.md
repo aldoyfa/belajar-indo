@@ -1,50 +1,92 @@
-# Welcome to your Expo app 👋
+# Belajar Indo — Universal Mobile/Web App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Cross-platform Bahasa Indonesia learning app built with Expo Router. Includes flashcard vocabulary (45 kata), quiz with history, and virtual lab modules, running on iOS, Android, and Web from a single codebase.
 
-## Get started
+---
 
-1. Install dependencies
+## 🚀 Fitur Utama
+- **Vocabulary**: 45 kata dalam 3 kategori (Makanan, Keluarga, Aktivitas Harian) dengan flashcard, flip animation, dan pencarian.
+- **Quiz + History**: Kuis pilihan ganda dengan riwayat hasil, grade badge, dan progress bar.
+- **Virtual Lab**: 15 modul latihan (Grammar, Conversation, Pronunciation) dengan indikator durasi & difficulty.
+- **Auth & Progress**: JWT auth, penyimpanan progress vocabulary/quiz.
+- **Multi-Platform**: Satu kode untuk iOS, Android, dan Web (Expo Router).
 
-   ```bash
-   npm install
-   ```
+## 🧰 Tech Stack
+- **Runtime**: React Native 0.81.5, Expo 54
+- **Routing**: Expo Router 6 (file-based routing)
+- **UI**: React Native, Expo Linear Gradient, Vector Icons
+- **State & Storage**: React hooks, AsyncStorage, Context
+- **Backend**: Node.js/Express + Prisma (folder `belajarindo-backend/`)
 
-2. Start the app
+## ✅ Prasyarat
+- Node.js 18+ (disarankan terbaru LTS)
+- npm 9+ (atau bun/yarn jika diinginkan)
+- Expo CLI (opsional, karena memakai `npx expo start`)
+- Git
 
-   ```bash
-   npx expo start
-   ```
+## 🛠️ Setup Cepat (Windows PowerShell)
+```powershell
+# 1) Install dependencies
+npm install
 
-In the output, you'll find options to open the app in a
+# 2) Jalankan dev server (pilih web/ios/android di menu Expo)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 🔑 Konfigurasi Environment
+Buat file `.env` di root (sudah di-.gitignore). Contoh minimal:
+```env
+API_BASE_URL=https://belajar-indo.vercel.app
+DATABASE_URL=postgresql://user:pass@host:5432/db
+JWT_SECRET=your-secret-key
+```
 
-## Learn more
+## ▶️ Menjalankan Aplikasi
+```powershell
+# Jalankan Metro/Expo server
+npm start
 
-To learn more about developing your project with Expo, look at the following resources:
+# Saat menu Expo muncul:
+#   w -> Web (browser)
+#   a -> Android emulator / device
+#   i -> iOS simulator (macOS)
+#   j -> Jest (jika diset)
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## 🧪 Testing
+- Manual testing panduan: lihat `TESTING_GUIDE.md` (cek Vocabulary, Quiz History, Virtual Lab).
+- Saat ini tidak ada suite unit/E2E di repo. Jalankan smoke test via `npm start` dan uji di Web/Android/iOS.
 
-## Join the community
+## 🗂️ Struktur Proyek (utama)
+```
+app/                    # Expo Router screens (tabs, auth, layouts)
+components/             # Reusable UI components
+constants/              # Color, theme, shared constants
+hooks/                  # Custom hooks
+services/               # API clients (auth, lab, quiz, vocab)
+types/                  # TypeScript types
+utils/                  # Helpers
+assets/                 # Images/assets
+belajarindo-backend/    # Backend (Express + Prisma)
+prisma/                 # Database schema & migrations
+```
 
-Join our community of developers creating universal apps.
+## 📚 Dokumentasi Penting
+- `FINAL_COMPLETION_SUMMARY.md` — Ringkasan lengkap progres & compliance UAS.
+- `TESTING_GUIDE.md` — Langkah pengujian cepat semua fitur utama.
+- `UAS_SUBMISSION_CHECKLIST.md` — Checklist siap submit.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## ❓ Troubleshooting Singkat
+- **Port/Metro error**: stop semua proses node, lalu `npm start` lagi.
+- **Dependency mismatch**: jalankan `npm install` ulang, pastikan tidak ada `app/package.json` duplikat (sudah dibersihkan).
+- **ENV tidak terbaca**: pastikan `.env` ada di root dan tidak di-commit; restart dev server setelah update ENV.
+
+## 🧭 Road to Submit
+1) `npm install`
+2) `npm start` dan uji Web/Android/iOS
+3) Ikuti `TESTING_GUIDE.md`
+4) Review `FINAL_COMPLETION_SUMMARY.md`
+5) Commit & push (branch: `virtual-lab-migration`)
+6) Submit ke UAS
+
+Selamat belajar! 🎉
