@@ -1,50 +1,112 @@
-# Welcome to your Expo app 👋
+<div align="center">
+  <img src="https://github.com/aldoyfa/belajar-indo/blob/virtual-lab-migration/assets/images/icon/Belajar.png" alt="BelajarIndo Logo" width="7600/>
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+[![React Native](https://img.shields.io/badge/React%20Native-0.81.5-61dafb?style=flat-square&logo=react)](https://reactnative.dev/)
+[![Expo](https://img.shields.io/badge/Expo-~54.0.25-000020?style=flat-square&logo=expo)](https://expo.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-3178c6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=node.js)](https://nodejs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169e1?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
 
-## Get started
+</div>
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## Overview
 
-2. Start the app
+> BelajarIndo adalah aplikasi lintas platform yang dirancang untuk memudahkan proses belajar Bahasa Indonesia secara interaktif dan mudah diakses. Aplikasi ini dibangun menggunakan React Native dan Expo, sehingga dapat berjalan dengan lancar di iOS, Android, dan Web.
 
-   ```bash
-   npx expo start
-   ```
+Fitur Utama
 
-In the output, you'll find options to open the app in a
+- Aplikasi Universal: Satu basis kode untuk iOS, Android, dan Web
+- UI/UX Modern: Desain visual menarik dengan gradasi warna dan animasi yang halus
+- Autentikasi Aman: Sistem login berbasis JWT dengan penyimpanan data terenkripsi
+- Pelacakan Progres: Statistik dan analitik pembelajaran secara real-time
+- Pembelajaran Interaktif
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+##  Features
+Berikut ini adalah fitur-fitur utama yang disediakan dalam aplikasi **BelajarIndo**:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+| Fitur | Deskripsi |
+|------|----------|
+| **Home Dashboard** | Akses cepat ke seluruh modul pembelajaran, menampilkan ringkasan progres, statistik belajar, serta rekomendasi materi yang dipersonalisasi. |
+| **Pembelajaran Kosakata** | Lebih dari **45 kosakata** dalam 3 kategori: <br>• Makanan & Minuman (15 kata) <br>• Keluarga (15 kata) <br>• Aktivitas Sehari-hari (15 kata). <br>Dilengkapi flashcard interaktif dengan animasi flip, contoh kalimat, pelacakan progres per kategori, dan fitur pencarian lanjutan. |
+| **Kuis Interaktif** | Kuis pilihan ganda dengan penilaian real-time, riwayat kuis lengkap, sistem nilai (A–F) dengan umpan balik visual, analitik performa dan tren, serta pencatatan waktu pengerjaan. |
+| **Virtual Lab** | Terdiri dari **15 modul** dalam 3 kategori: <br>• Tata Bahasa & Struktur (5 modul) <br>• Latihan Percakapan (5 modul) <br>• Laboratorium Pelafalan (5 modul). <br>Menyediakan tingkat kesulitan (Mudah, Menengah, Sulit), estimasi durasi 10–30 menit, dan pelacakan progres per modul. |
+| **Profil Pengguna** | Dashboard statistik personal, grafik tren performa, visualisasi riwayat kuis, pengelolaan akun, serta kustomisasi avatar pengguna. |
 
-## Get a fresh project
 
-When you're ready, run:
+---
 
+## Getting Started
+
+Sebelum menjalankan aplikasi, pastikan perangkat telah memenuhi kebutuhan berikut:
+
+- Node.js (versi 18 atau lebih baru)
+- npm atau yarn
+- Expo CLI (opsional, namun direkomendasikan)
+- PostgreSQL (versi 15 atau lebih baru)
+- Git
+
+Untuk pengembangan aplikasi mobile:
+- Android Studio (untuk Android)
+- Xcode (untuk iOS, khusus macOS)
+
+
+---
+
+## Running on Devices
+
+### **Web**
 ```bash
-npm run reset-project
+npm run web
+```
+Aplikasi akan terbuka melalui browser pada alamat:
+`http://localhost:8081`
+
+### **Android**
+```bash
+npm run android
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### **iOS**
+```bash
+npm run ios
+```
 
-## Learn more
+### **Expo Go (Quick Testing)**
 
-To learn more about developing your project with Expo, look at the following resources:
+1. Instal aplikasi Expo Go pada perangkat mobile:
+   - [iOS App Store](https://apps.apple.com/app/expo-go/id982107779)
+   - [Android Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent)
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+2. Jalankan `npm start` dan pindai QR Code yang muncul menggunakan aplikasi Expo Go
 
-## Join the community
+---
 
-Join our community of developers creating universal apps.
+## Project Structure
+Dibawah ini adalah struktur folder utama yang digunakan dalam pengembangan aplikasi BelajarIndo beserta fungsi dari masing-masing direktori:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```
+belajarindo/
+├── app/                → Kode utama aplikasi frontend (halaman & navigasi)
+├── components/         → Komponen UI yang dapat digunakan ulang
+├── services/           → Layanan API dan integrasi backend
+├── constants/          → Konstanta aplikasi (warna, konfigurasi)
+├── types/              → Definisi tipe data
+├── belajarindo-backend/→ Kode backend dan manajemen basis data
+├── assets/             → Aset statis aplikasi
+├── package.json        → Konfigurasi dependensi
+└── README.md           → Dokumentasi proyek
+```
+
+## Contributors
+Berikut adalah daftar kontributor beserta pembagian tugasnya masing-masing:
+
+| No | Nama | NIM | Tugas / Kontribusi |
+|----|------|-----|--------------------|
+| 1 | **Aldoy Fauzan Avanza** | 18223113 | - Pengembangan fitur inti aplikasi<br>- Implementasi backend dan Integrasi<br>- Membuat splash screen aplikasi<br>- Finalisasi Project<br>- Menulis dan merapikan dokumentasi serta laporan proyek |
+| 2 | **Laras Hati Mahendra** | 18223118 | - Inisiasi ide dan perencanaan proyek<br>-Penyusunan struktur repository dan alur pengembangan<br>- Melakukan migrasi Expo<br>- Mendesain UI<br>- Menyusun analisis sistem (use case, activity diagram, sequence diagram)<br> - Menulis dan merapikan dokumentasi serta laporan proyek |
+
+---
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
