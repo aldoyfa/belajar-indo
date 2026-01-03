@@ -15,13 +15,6 @@
 
 > BelajarIndo adalah aplikasi lintas platform yang dirancang untuk memudahkan proses belajar Bahasa Indonesia secara interaktif dan mudah diakses. Aplikasi ini dibangun menggunakan React Native dan Expo, sehingga dapat berjalan dengan lancar di iOS, Android, dan Web.
 
-Fitur Utama
-
-- Aplikasi Universal: Satu basis kode untuk iOS, Android, dan Web
-- UI/UX Modern: Desain visual menarik dengan gradasi warna dan animasi yang halus
-- Autentikasi Aman: Sistem login berbasis JWT dengan penyimpanan data terenkripsi
-- Pelacakan Progres: Statistik dan analitik pembelajaran secara real-time
-- Pembelajaran Interaktif
 ---
 
 ##  Features
