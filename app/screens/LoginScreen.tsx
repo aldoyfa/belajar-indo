@@ -14,7 +14,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useAuth } from "../_context/AuthContext";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../../src/context/AuthContext";
 
 type TabType = "login" | "signup";
 type ModalType = "success" | "error" | "warning";
@@ -151,7 +152,8 @@ export default function LoginScreen() {
   const modalStyle = getModalIcon();
 
   return (
-    <LinearGradient colors={["#667eea", "#764ba2"]} style={styles.container}>
+    <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
+      <LinearGradient colors={["#ff6b6b", "#ff8e8e"]} style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
@@ -175,34 +177,38 @@ export default function LoginScreen() {
 
           {/* Form Card */}
           <View style={styles.card}>
-            {/* Tab Buttons */}
+            {/* Tab Buttons - matching web app gradient style */}
             <View style={styles.tabContainer}>
-              <TouchableOpacity
-                style={[styles.tab, activeTab === "login" && styles.activeTab]}
-                onPress={() => setActiveTab("login")}
-              >
-                <Text
-                  style={[
-                    styles.tabText,
-                    activeTab === "login" && styles.activeTabText,
-                  ]}
+              {activeTab === "login" ? (
+                <LinearGradient
+                  colors={["#ff6b6b", "#ff8e8e"]}
+                  style={[styles.tab, styles.activeTabGradient]}
                 >
-                  Sign In
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.tab, activeTab === "signup" && styles.activeTab]}
-                onPress={() => setActiveTab("signup")}
-              >
-                <Text
-                  style={[
-                    styles.tabText,
-                    activeTab === "signup" && styles.activeTabText,
-                  ]}
+                  <Text style={[styles.tabText, styles.activeTabText]}>Sign In</Text>
+                </LinearGradient>
+              ) : (
+                <TouchableOpacity
+                  style={styles.tab}
+                  onPress={() => setActiveTab("login")}
                 >
-                  Sign Up
-                </Text>
-              </TouchableOpacity>
+                  <Text style={styles.tabText}>Sign In</Text>
+                </TouchableOpacity>
+              )}
+              {activeTab === "signup" ? (
+                <LinearGradient
+                  colors={["#ff6b6b", "#ff8e8e"]}
+                  style={[styles.tab, styles.activeTabGradient]}
+                >
+                  <Text style={[styles.tabText, styles.activeTabText]}>Sign Up</Text>
+                </LinearGradient>
+              ) : (
+                <TouchableOpacity
+                  style={styles.tab}
+                  onPress={() => setActiveTab("signup")}
+                >
+                  <Text style={styles.tabText}>Sign Up</Text>
+                </TouchableOpacity>
+              )}
             </View>
 
             {/* Login Form */}
@@ -332,10 +338,15 @@ export default function LoginScreen() {
         </View>
       </Modal>
     </LinearGradient>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#ff6b6b",
+  },
   container: {
     flex: 1,
   },
@@ -391,14 +402,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 24,
     backgroundColor: "#f5f5f5",
-    borderRadius: 12,
+    borderRadius: 25,
     padding: 4,
+    overflow: "hidden",
   },
   tab: {
     flex: 1,
     paddingVertical: 12,
     alignItems: "center",
-    borderRadius: 10,
+    borderRadius: 20,
+  },
+  activeTabGradient: {
+    shadowColor: "#ff6b6b",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   activeTab: {
     backgroundColor: "#fff",
@@ -411,10 +430,10 @@ const styles = StyleSheet.create({
   tabText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#999",
+    color: "#666",
   },
   activeTabText: {
-    color: "#667eea",
+    color: "#fff",
   },
   form: {
     gap: 16,
@@ -437,11 +456,16 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   button: {
-    backgroundColor: "#667eea",
-    borderRadius: 12,
+    backgroundColor: "#ff6b6b",
+    borderRadius: 25,
     padding: 16,
     alignItems: "center",
     marginTop: 8,
+    shadowColor: "#ff6b6b",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   buttonDisabled: {
     opacity: 0.7,
@@ -500,10 +524,15 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   modalButton: {
-    backgroundColor: "#667eea",
+    backgroundColor: "#ff6b6b",
     paddingVertical: 14,
     paddingHorizontal: 40,
-    borderRadius: 12,
+    borderRadius: 25,
+    shadowColor: "#ff6b6b",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   modalButtonText: {
     color: "#fff",

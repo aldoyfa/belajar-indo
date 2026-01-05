@@ -105,6 +105,7 @@ export const quizAPI = {
       totalQuestions: number;
       correctAnswers: number;
       timeSpent: number;
+      quizType?: string;
       quizCategory?: string;
     }
   ) => {
@@ -138,6 +139,11 @@ export const quizAPI = {
 
   getResults: async (token: string) => {
     return apiRequest(ENDPOINTS.QUIZ_RESULTS, { method: "GET" }, token);
+  },
+
+  // Use same endpoint as web app profile.html
+  getHistory: async (token: string) => {
+    return apiRequest(ENDPOINTS.QUIZ_HISTORY, { method: "GET" }, token);
   },
 
   getStats: async (token: string) => {

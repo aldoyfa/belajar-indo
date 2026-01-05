@@ -4,14 +4,14 @@ import { useState } from "react";
 import {
     Alert,
     Dimensions,
-    SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
 } from "react-native";
-import { VocabCategory, vocabularyData, VocabWord } from "../_data/vocabulary";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { VocabCategory, vocabularyData, VocabWord } from "../../src/data/vocabulary";
 
 // Try to import expo-speech, but handle gracefully if not available
 let Speech: any = null;
@@ -84,7 +84,7 @@ export default function VocabularyScreen() {
   const currentWord: VocabWord | undefined = selectedCategory?.words[currentIndex];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       {/* Header */}
       <LinearGradient colors={["#667eea", "#764ba2"]} style={styles.header}>
         <View style={styles.headerContent}>

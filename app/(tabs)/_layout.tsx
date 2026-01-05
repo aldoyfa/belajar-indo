@@ -1,6 +1,7 @@
 import { Tabs } from "expo-router";
-import { Platform, StyleSheet, Text, View } from "react-native";
-import { useAuth } from "../_context/AuthContext";
+import { StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAuth } from "../../src/context/AuthContext";
 
 function TabBarIcon({ name, focused }: { name: string; focused: boolean }) {
   const icons: Record<string, string> = {
@@ -21,12 +22,16 @@ function TabBarIcon({ name, focused }: { name: string; focused: boolean }) {
 
 export default function TabLayout() {
   const { isAuthenticated } = useAuth();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: [
+          styles.tabBar,
+          { paddingBottom: Math.max(insets.bottom, 12), height: 60 + Math.max(insets.bottom, 12) }
+        ],
         tabBarActiveTintColor: "#667eea",
         tabBarInactiveTintColor: "#9ca3af",
         tabBarLabelStyle: styles.tabLabel,
@@ -78,8 +83,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#f3f4f6",
     paddingTop: 8,
-    paddingBottom: Platform.OS === "ios" ? 24 : 12,
-    height: Platform.OS === "ios" ? 88 : 70,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.05,

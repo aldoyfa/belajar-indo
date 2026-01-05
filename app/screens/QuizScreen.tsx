@@ -4,16 +4,16 @@ import { useCallback, useState } from "react";
 import {
     ActivityIndicator,
     Alert,
-    SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
 } from "react-native";
-import { quizAPI } from "../_config/api";
-import { useAuth } from "../_context/AuthContext";
-import { generateQuizQuestions, QuizQuestion } from "../_data/vocabulary";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { quizAPI } from "../../src/config/api";
+import { useAuth } from "../../src/context/AuthContext";
+import { generateQuizQuestions, QuizQuestion } from "../../src/data/vocabulary";
 
 type QuizState = "start" | "playing" | "result";
 
@@ -74,7 +74,7 @@ export default function QuizScreen() {
           totalQuestions: questions.length,
           correctAnswers: score + (selectedAnswer === questions[currentQuestionIndex]?.correctAnswer ? 1 : 0),
           timeSpent,
-          quizCategory: "vocab",
+          quizType: "vocab",
         });
       } catch (error) {
         console.error("Failed to submit quiz:", error);
@@ -99,7 +99,7 @@ export default function QuizScreen() {
   // Start Screen
   if (quizState === "start") {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
         <LinearGradient colors={["#667eea", "#764ba2"]} style={styles.header}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Text style={styles.backButtonText}>← Kembali</Text>
@@ -215,7 +215,7 @@ export default function QuizScreen() {
 
   // Quiz Playing Screen
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <LinearGradient colors={["#667eea", "#764ba2"]} style={styles.header}>
         <TouchableOpacity
           onPress={() => {

@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { AuthProvider } from "./_context/AuthContext";
+import { AuthProvider } from "../src/context/AuthContext";
 
 export default function RootLayout() {
   return (

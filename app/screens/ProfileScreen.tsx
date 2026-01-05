@@ -2,18 +2,18 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    RefreshControl,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Alert,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from "react-native";
-import { quizAPI } from "../_config/api";
-import { useAuth } from "../_context/AuthContext";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { quizAPI } from "../../src/config/api";
+import { useAuth } from "../../src/context/AuthContext";
 
 interface QuizResult {
   id: number;
@@ -28,8 +28,7 @@ interface QuizResult {
 interface QuizStats {
   totalQuizzes: number;
   averageScore: number;
-  totalCorrect: number;
-  totalQuestions: number;
+  totalTimeSpent: number;
   bestScore: number;
 }
 
@@ -39,6 +38,7 @@ export default function ProfileScreen() {
   const [stats, setStats] = useState<QuizStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
     if (!token) {
@@ -47,24 +47,60 @@ export default function ProfileScreen() {
     }
 
     try {
-      const [resultsRes, statsRes] = await Promise.all([
-        quizAPI.getResults(token),
-        quizAPI.getStats(token),
-      ]);
+      // Fetch stats first
+      const statsRes = await quizAPI.getStats(token);
+      
+      console.log("Stats response:", JSON.stringify(statsRes, null, 2));
 
-      if (resultsRes.ok && resultsRes.data) {
-        // Handle different response formats
-        const results = Array.isArray(resultsRes.data) 
-          ? resultsRes.data 
-          : (resultsRes.data as any).results || [];
-        setQuizResults(results);
+      // Parse stats - web app expects { stats: {...} }
+      if (statsRes.ok && statsRes.data) {
+        const responseData = statsRes.data as any;
+        const statsData = responseData.stats || responseData;
+        
+        console.log("Stats data:", statsData);
+        
+        setStats({
+          totalQuizzes: statsData.totalQuizzes || 0,
+          averageScore: statsData.averageScore || 0,
+          bestScore: statsData.bestScore || 0,
+          totalTimeSpent: statsData.totalTimeSpent || 0,
+        });
       }
 
-      if (statsRes.ok && statsRes.data) {
-        setStats(statsRes.data as QuizStats);
+      // Try /api/quiz/history first (like web app), fallback to /api/quiz/results
+      let historyRes = await quizAPI.getHistory(token);
+      console.log("History response (from /api/quiz/history):", JSON.stringify(historyRes, null, 2));
+      
+      // If history endpoint fails, try results endpoint
+      if (!historyRes.ok) {
+        console.log("History endpoint failed, trying results endpoint...");
+        historyRes = await quizAPI.getResults(token);
+        console.log("Results response (from /api/quiz/results):", JSON.stringify(historyRes, null, 2));
+      }
+
+      // Parse history/results - expects { results: [...] }
+      if (historyRes.ok && historyRes.data) {
+        const responseData = historyRes.data as any;
+        // Handle both { results: [...] } and direct array formats
+        const items = Array.isArray(responseData) 
+          ? responseData 
+          : (Array.isArray(responseData.results) ? responseData.results : []);
+        
+        console.log("Parsed quiz history items:", items.length);
+        if (items.length > 0) {
+          console.log("First item sample:", JSON.stringify(items[0], null, 2));
+        }
+        setQuizResults(items);
+        setFetchError(null);
+      } else {
+        console.log("Both history and results fetch failed:", historyRes);
+        setQuizResults([]);
+        setFetchError(`API Error: ${historyRes.error || historyRes.status || 'Unknown'}`);
       }
     } catch (error) {
       console.error("Failed to load profile data:", error);
+      setQuizResults([]);
+      setFetchError(`Exception: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
       setIsLoading(false);
     }
@@ -122,7 +158,7 @@ export default function ProfileScreen() {
 
   if (!isAuthenticated) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
         <LinearGradient colors={["#667eea", "#764ba2"]} style={styles.header}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Text style={styles.backButtonText}>← Kembali</Text>
@@ -149,7 +185,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       {/* Header */}
       <LinearGradient colors={["#667eea", "#764ba2"]} style={styles.profileHeader}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
@@ -207,9 +243,9 @@ export default function ProfileScreen() {
                 <Text style={styles.statLabel}>Skor Terbaik</Text>
               </View>
               <View style={styles.statCard}>
-                <Text style={styles.statIcon}>✅</Text>
-                <Text style={styles.statValue}>{stats?.totalCorrect || 0}</Text>
-                <Text style={styles.statLabel}>Jawaban Benar</Text>
+                <Text style={styles.statIcon}>⏱️</Text>
+                <Text style={styles.statValue}>{formatTime(stats?.totalTimeSpent || 0)}</Text>
+                <Text style={styles.statLabel}>Total Waktu</Text>
               </View>
             </View>
 
@@ -246,8 +282,20 @@ export default function ProfileScreen() {
 
             {/* Quiz History */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Riwayat Kuis</Text>
-              {quizResults.length === 0 ? (
+              <Text style={styles.sectionTitle}>Riwayat Kuis ({quizResults.length})</Text>
+              {fetchError ? (
+                <View style={styles.emptyState}>
+                  <Text style={styles.emptyIcon}>⚠️</Text>
+                  <Text style={styles.emptyText}>Gagal memuat riwayat</Text>
+                  <Text style={styles.emptySubtext}>{fetchError}</Text>
+                  <TouchableOpacity 
+                    style={[styles.loginButton, { marginTop: 16 }]}
+                    onPress={onRefresh}
+                  >
+                    <Text style={styles.loginButtonText}>Coba Lagi</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : quizResults.length === 0 ? (
                 <View style={styles.emptyState}>
                   <Text style={styles.emptyIcon}>📝</Text>
                   <Text style={styles.emptyText}>Belum ada kuis yang diselesaikan</Text>
@@ -256,39 +304,43 @@ export default function ProfileScreen() {
                   </Text>
                 </View>
               ) : (
-                quizResults.slice(0, 10).map((result, index) => (
+                quizResults.slice(0, 10).map((result, index) => {
+                  // Handle score - might be decimal (0.8) or percentage (80)
+                  const displayScore = result.score > 1 ? Math.round(result.score) : Math.round(result.score * 100);
+                  return (
                   <View key={result.id || index} style={styles.historyCard}>
                     <View style={styles.historyLeft}>
                       <View
                         style={[
                           styles.scoreCircle,
-                          { borderColor: getScoreColor(result.score) },
+                          { borderColor: getScoreColor(displayScore) },
                         ]}
                       >
                         <Text
                           style={[
                             styles.historyScore,
-                            { color: getScoreColor(result.score) },
+                            { color: getScoreColor(displayScore) },
                           ]}
                         >
-                          {result.score}%
+                          {displayScore}%
                         </Text>
                       </View>
                     </View>
                     <View style={styles.historyRight}>
                       <Text style={styles.historyCategory}>
-                        {result.quizCategory || "Vocabulary Quiz"}
+                        {result.quizCategory === "vocab" ? "Kuis Kosakata" : (result.quizCategory || "Kuis Kosakata")}
                       </Text>
                       <Text style={styles.historyDetails}>
-                        {result.correctAnswers}/{result.totalQuestions} correct •{" "}
-                        {formatTime(result.timeSpent)}
+                        {result.correctAnswers || 0}/{result.totalQuestions || 10} benar •{" "}
+                        {formatTime(result.timeSpent || 0)}
                       </Text>
                       <Text style={styles.historyDate}>
                         {formatDate(result.completedAt)}
                       </Text>
                     </View>
                   </View>
-                ))
+                  );
+                })
               )}
             </View>
 

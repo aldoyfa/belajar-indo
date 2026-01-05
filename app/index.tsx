@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { useEffect } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
-import { useAuth } from "./_context/AuthContext";
+import { useAuth } from "../src/context/AuthContext";
 
 export default function Index() {
   const { isAuthenticated, isLoading } = useAuth();

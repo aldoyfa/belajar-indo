@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { authAPI } from "../_config/api";
+import { authAPI } from "../config/api";
 
 // Types
 export interface User {
